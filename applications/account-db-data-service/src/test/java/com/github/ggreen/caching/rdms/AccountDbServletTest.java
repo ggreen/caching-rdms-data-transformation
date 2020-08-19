@@ -1,7 +1,7 @@
 package com.github.ggreen.caching.rdms;
 
 import com.github.ggreen.caching.rdms.domain.Account;
-import com.github.ggreen.caching.rdms.domain.AccountJdbcRepository;
+import com.github.ggreen.caching.rdms.domain.jdbc.AccountJdbcRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

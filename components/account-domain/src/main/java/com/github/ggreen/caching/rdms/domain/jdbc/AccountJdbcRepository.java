@@ -1,5 +1,7 @@
-package com.github.ggreen.caching.rdms.domain;
+package com.github.ggreen.caching.rdms.domain.jdbc;
 
+import com.github.ggreen.caching.rdms.domain.Account;
+import com.github.ggreen.caching.rdms.domain.AccountRepository;
 import nyla.solutions.core.exception.DataException;
 import nyla.solutions.core.patterns.jdbc.Sql;
 

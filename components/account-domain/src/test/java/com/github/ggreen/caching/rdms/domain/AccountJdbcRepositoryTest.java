@@ -1,7 +1,7 @@
 package com.github.ggreen.caching.rdms.domain;
+import com.github.ggreen.caching.rdms.domain.jdbc.AccountJdbcRepository;
 import nyla.solutions.core.exception.DataException;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
-import nyla.solutions.core.patterns.jdbc.Sql;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.sql.Connection;
