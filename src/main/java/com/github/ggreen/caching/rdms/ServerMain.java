@@ -27,6 +27,7 @@ public class ServerMain
     {
         Server server = new Server(8080);
 
+
         URL webRootLocation = this.getClass().getResource("/webroot/index.html");
         if (webRootLocation == null)
         {
@@ -46,7 +47,7 @@ public class ServerMain
         server.setHandler(context);
 
         // Add Servlet endpoints
-        context.addServlet(AccountDbServlet.class,"/accounts/db/");
+        context.addServlet(AccountDbServlet.class,"/accounts/db/*");
 
         context.addServlet(DefaultServlet.class,"/");
 

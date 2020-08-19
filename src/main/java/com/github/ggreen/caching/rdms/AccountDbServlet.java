@@ -3,11 +3,11 @@ package com.github.ggreen.caching.rdms;
 
 import com.github.ggreen.caching.rdms.domain.Account;
 import com.github.ggreen.caching.rdms.domain.AccountJdbcRepository;
-import nyla.solutions.core.patterns.jdbc.Sql;
+import com.github.ggreen.caching.rdms.domain.AccountRepository;
+import com.github.ggreen.caching.rdms.domain.AccountToJson;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.TimeZone;
+import java.util.function.Function;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,24 +16,25 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AccountDbServlet extends HttpServlet
 {
-    private final AccountJdbcRepository repository;
+    private final AccountRepository repository;
+    private final Function<Account,String> converter;
 
-    public AccountDbServlet(AccountJdbcRepository repository)
+    public AccountDbServlet()
+    {
+        this(new AccountJdbcRepository(new ApacheDbcpConnections()),
+                new AccountToJson());
+    }
+    public AccountDbServlet(AccountRepository repository, Function<Account, String> converter)
     {
         this.repository = repository;
+        this.converter = converter;
     }
-
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         Long accountId = accountId(req);
-        try {
-            Account account = repository.findById(accountId);
-        }
-        catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
+        Account account = repository.findById(accountId);
+        resp.getWriter().write(converter.apply(account));
     }
 
     protected Long accountId(HttpServletRequest req)
