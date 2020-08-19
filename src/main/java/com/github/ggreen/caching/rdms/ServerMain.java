@@ -3,13 +3,10 @@ package com.github.ggreen.caching.rdms;
 import java.net.URI;
 import java.net.URL;
 
-import javax.websocket.server.ServerContainer;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
 public class ServerMain
 {
@@ -48,12 +45,8 @@ public class ServerMain
 
         server.setHandler(context);
 
-        // Add WebSocket endpoints
-        ServerContainer wsContainer = WebSocketServerContainerInitializer.configureContext(context);
-        wsContainer.addEndpoint(TimeSocket.class);
-
         // Add Servlet endpoints
-        context.addServlet(TimeServlet.class,"/time/");
+        context.addServlet(AccountDbServlet.class,"/accounts/db/");
 
         context.addServlet(DefaultServlet.class,"/");
 
