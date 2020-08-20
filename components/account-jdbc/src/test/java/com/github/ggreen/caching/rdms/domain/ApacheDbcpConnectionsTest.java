@@ -1,5 +1,6 @@
-package com.github.ggreen.caching.rdms;
+package com.github.ggreen.caching.rdms.domain;
 
+import com.github.ggreen.caching.rdms.domain.jdbc.ApacheDbcpConnections;
 import nyla.solutions.core.util.settings.Settings;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.jupiter.api.Test;

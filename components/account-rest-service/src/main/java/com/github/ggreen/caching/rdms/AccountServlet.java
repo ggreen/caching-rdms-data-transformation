@@ -1,45 +1,47 @@
 package com.github.ggreen.caching.rdms;
 
-
 import com.github.ggreen.caching.rdms.domain.Account;
-import com.github.ggreen.caching.rdms.domain.jdbc.AccountJdbcRepository;
 import com.github.ggreen.caching.rdms.domain.AccountRepository;
-import com.github.ggreen.caching.rdms.domain.AccountToJson;
-
+import nyla.solutions.core.io.IO;
 import java.io.IOException;
 import java.util.function.Function;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AccountDbServlet extends HttpServlet
+public class AccountServlet extends HttpServlet
 {
     private final AccountRepository repository;
-    private final Function<Account,String> converter;
+    private final Function<Account,String> accountToJson;
+    private final Function<String, Account> jsonToAccount;
 
-    public AccountDbServlet()
-    {
-        this(new AccountJdbcRepository(new ApacheDbcpConnections()),
-                new AccountToJson());
-    }
-    public AccountDbServlet(AccountRepository repository, Function<Account, String> converter)
+    public AccountServlet(AccountRepository repository, Function<Account, String> accountToJson, Function<String,
+            Account> jsonToAccount)
     {
         this.repository = repository;
-        this.converter = converter;
+        this.accountToJson = accountToJson;
+        this.jsonToAccount = jsonToAccount;
     }
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         Long accountId = accountId(req);
         Account account = repository.findById(accountId);
-        resp.getWriter().write(converter.apply(account));
+        resp.getWriter().write(accountToJson.apply(account));
     }
 
-    protected Long accountId(HttpServletRequest req)
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        String url = req.getRequestURI();
+        String json = IO.readText(request.getReader());
+        Account account = this.jsonToAccount.apply(json);
+        this.repository.create(account);
+    }
+
+    protected Long accountId(HttpServletRequest request)
+    {
+        String url = request.getRequestURI();
         if(url == null)
             return null;
 

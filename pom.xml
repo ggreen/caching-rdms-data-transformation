@@ -15,6 +15,9 @@
     </properties>
     <modules>
         <module>components/account-domain</module>
+        <module>components/account-jdbc</module>
+        <module>components/account-rest-service</module>
+        <module>components/account-jdbc-rest-service</module>
         <module>applications/account-db-data-service</module>
     </modules>
     <dependencies>

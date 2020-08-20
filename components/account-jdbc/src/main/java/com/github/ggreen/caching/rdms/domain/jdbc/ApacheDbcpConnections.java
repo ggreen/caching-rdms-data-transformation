@@ -1,4 +1,4 @@
-package com.github.ggreen.caching.rdms;
+package com.github.ggreen.caching.rdms.domain.jdbc;
 
 import nyla.solutions.core.util.Config;
 import nyla.solutions.core.util.settings.Settings;
