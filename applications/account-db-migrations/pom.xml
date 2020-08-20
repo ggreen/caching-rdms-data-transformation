@@ -5,34 +5,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.ggreen</groupId>
-    <artifactId>account-db-data-service</artifactId>
+    <artifactId>account-db-migrations</artifactId>
     <version>1.0-SNAPSHOT</version>
-
-    <name>account-db-data-service</name>
+    <name>account-db-migrations</name>
     <properties>
-        <tomcat.version>8.5.23</tomcat.version>
-        <maven.compiler.target>1.11</maven.compiler.target>
-        <maven.compiler.source>1.11</maven.compiler.source>
-        <assertj.version>3.6.2</assertj.version>
-        <httpclient.version>4.5.3</httpclient.version>
-        <jetty-version>9.4.20.v20190813</jetty-version>
-        <netty.version>4.1.20.Final</netty.version>
-        <tomcat.version>8.5.24</tomcat.version>
-        <smack.version>4.3.1</smack.version>
-        <eclipse.paho.client.mqttv3.version>1.2.0</eclipse.paho.client.mqttv3.version>
-        <nanohttpd.version>2.3.1</nanohttpd.version>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.12</version>
-            <scope>test</scope>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>6.5.5</version>
         </dependency>
         <dependency>
-            <groupId>com.github.ggreen</groupId>
-            <artifactId>account-jdbc-rest-service</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.197</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -57,153 +46,39 @@
             <version>5.6.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.ggreen</groupId>
-            <artifactId>account-rest-service</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
 
     </dependencies>
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.8.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
-
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.github.ggreen.caching.rdms.AccountWebServer</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <!-- Specified to allow Jetty to know its own Version ID -->
-                            <Implementation-Version>${jetty-version}</Implementation-Version>
-                        </manifestEntries>
-                    </archive>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.1</version>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
-                        <id>create-uber-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <artifactSet>
-                                <includes>
-                                    <include>*:*</include>
-                                </includes>
-                                <excludes>
-                                    <!-- avoiding warnings, as theses classes are already part of javax.websocket-api -->
-                                    <exclude>javax.websocket:javax.websocket-client-api</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <!-- excluding license contents -->
-                                        <exclude>META-INF/VERSION.txt</exclude>
-                                        <exclude>META-INF/LICENSE.txt</exclude>
-                                        <!-- excluding JPMS module definitions -->
-                                        <exclude>module-info.class</exclude>
-                                    </excludes>
-                                </filter>
-                                <!-- exclude the MANIFEST.MF entries that will cause problems -->
-                                <filter>
-                                    <artifact>javax.annotation:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>javax.servlet:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>javax.websocket:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.eclipse.jetty:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.eclipse.jetty.websocket:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                    </excludes>
-                                </filter>c
-                                <filter>
-                                    <artifact>org.ow2.asm:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.github.ggreen.caching.rdms.migration.AccountMigrationApp</mainClass>
+                                </transformer>
                             </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.1.1</version>
-                <executions>
-                    <execution>
-                        <id>enforce-java</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>[3.0.0,)</version>
-                                </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <version>[1.8,)</version>
-                                    <message>[ERROR] OLD JDK [${java.version}] in use.
-                                        Jetty ${jetty-version} requires JDK 1.8 or newer</message>
-                                </requireJavaVersion>
-                            </rules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>
