@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
@@ -91,7 +92,6 @@ class AccountAppTest
             String actual = response.toString();
             assertTrue(actual != null  && actual.length() > 0);
         }
-
     }
 
     @Test
@@ -115,8 +115,34 @@ class AccountAppTest
             actual = response.toString();
         }
 
+    }
+    @Test
+    void when_delete_then_delete_account() throws IOException
+    {
+
+        String createJSon = expectedJson;
+        createAccount(createJSon);
+        expected.setName(new FullNameCreator().create());
+
+        String uri = "http://localhost:8080/accounts/"+expected.getId();
+        HttpDelete httpDelete = new HttpDelete(uri);
+        expectedJson = toAccountJson();
+
+        StringEntity httpEntity = new StringEntity(expectedJson);
+        String actual;
+        try(CloseableHttpResponse response = requestHttp(httpDelete))
+        {
+            assertEquals(200,response.getStatusLine().getStatusCode());
+            actual = response.toString();
+        }
+
+        try(CloseableHttpResponse response = requestHttp(new HttpGet(uri)))
+        {
+            assertEquals(HttpServletResponse.SC_NOT_FOUND,response.getStatusLine().getStatusCode());
+        }
 
     }
+
 
     private String createAccount(String expectedJson) throws IOException
     {

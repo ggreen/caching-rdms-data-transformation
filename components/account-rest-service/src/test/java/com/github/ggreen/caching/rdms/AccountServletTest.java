@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.function.Function;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -92,15 +90,14 @@ public class AccountServletTest
         @Test
         public void given_invalid_acctId_Then_Return_null() throws ServletException, IOException, SQLException
         {
-            String json = "{}";
-            when(acctToJSon.apply(any())).thenReturn(json);
+
+            String expectedUri = "/accounts/1";
+            when(request.getRequestURI()).thenReturn(expectedUri);
+            when(repository.findById(anyLong())).thenReturn(null);
+
             subject.doGet(request, response);
-
-
-            verify(repository, never()).findById(anyLong());
-            verify(response).getWriter();
-            verify(acctToJSon).apply(any());
-            verify(printWriter).write(anyString());
+            verify(repository).findById(anyLong());
+            verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
 
         }
     }

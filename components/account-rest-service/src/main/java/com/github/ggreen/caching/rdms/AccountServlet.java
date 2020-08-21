@@ -24,11 +24,20 @@ public class AccountServlet extends HttpServlet
         this.jsonToAccount = jsonToAccount;
     }
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        Long accountId = accountId(req);
+        Long accountId = accountId(request);
         Account account = repository.findById(accountId);
-        resp.getWriter().write(accountToJson.apply(account));
+        if(account == null)
+        {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+        else
+        {
+            response.getWriter().write(accountToJson.apply(account));
+        }
+
+
     }
 
     @Override
@@ -53,7 +62,7 @@ public class AccountServlet extends HttpServlet
         if(!found)
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         else
-            resp.setStatus(HttpServletResponse.SC_FOUND);
+            resp.setStatus(HttpServletResponse.SC_OK);
 
     }
 
