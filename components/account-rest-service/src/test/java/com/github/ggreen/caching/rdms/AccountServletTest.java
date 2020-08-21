@@ -3,7 +3,9 @@ package com.github.ggreen.caching.rdms;
 import com.github.ggreen.caching.rdms.domain.Account;
 import com.github.ggreen.caching.rdms.domain.AccountRepository;
 import com.github.ggreen.caching.rdms.domain.jdbc.AccountJdbcRepository;
+import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -16,11 +18,11 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@DisplayName("Given Account Servlet")
 public class AccountServletTest
 {
     private AccountRepository repository;
@@ -30,6 +32,8 @@ public class AccountServletTest
     private PrintWriter printWriter;
     private Function<Account, String> acctToJSon;
     private Function<String, Account> jsonToAccount;
+    private BufferedReader bufferReader;
+    private BufferedReader reader;
 
     @BeforeEach
     void setUp() throws IOException
@@ -39,9 +43,19 @@ public class AccountServletTest
         jsonToAccount = mock(Function.class);
         subject = new AccountServlet(repository, acctToJSon,jsonToAccount);
         request = mock(HttpServletRequest.class);
+
+        reader = mock(BufferedReader.class);
+
         response = mock(HttpServletResponse.class);
         printWriter = mock(PrintWriter.class);
         when(response.getWriter()).thenReturn(printWriter);
+    }
+
+    @Test
+    @DisplayName("When account is null then toAccount returns null")
+    void toAccount_when_null() throws IOException
+    {
+        assertNull(subject.toAccount(request));
     }
 
     @Nested
@@ -50,8 +64,8 @@ public class AccountServletTest
         @Test
         void given_invalid_account_then_create() throws ServletException, IOException
         {
-            BufferedReader reader = mock(BufferedReader.class);
             when(request.getReader()).thenReturn(reader);
+
             String json = "{}";
             when(reader.readLine()).thenReturn(json).thenReturn(null);
 
@@ -60,6 +74,7 @@ public class AccountServletTest
             repository.create(any());
         }
     }
+
 
     @Nested
     public class WhenRead
@@ -90,7 +105,54 @@ public class AccountServletTest
         }
     }
 
+    @Nested
+    class WhenUpdate
+    {
+        @Test
+        void given_valid_account_then_update() throws ServletException, IOException
+        {
+            Account expected = new JavaBeanGeneratorCreator<>
+                    (Account.class).randomizeAll().create();
+
+            when(jsonToAccount.apply(any())).thenReturn(expected);
+            when(repository.update(any())).thenReturn(expected);
+            when(acctToJSon.apply(any())).thenReturn("{}");
+            subject.doPut(request, response);
+
+            verify(repository).update(any());
+            verify(acctToJSon).apply(any());
+            verify(printWriter).write(anyString());
+
+        }
+    }
+    @Nested
+    class WhenDelete
+    {
+        @Test
+        void given_nullAccount_throws_Error() throws ServletException
+        {
+            try
+            {
+                subject.doDelete(request, response);
+            }catch(NullPointerException e)
+            {
+                assertTrue(e.getMessage().contains("not found"));
+            }
+        }
+
+        @Test
+        void given_id_delete_account() throws ServletException
+        {
+            String exceptedId = "1";
+            when(request.getRequestURI()).thenReturn("/accounts/"+exceptedId);
+            subject.doDelete(request, response);
+            verify(repository).deleteAccountById(anyLong());
+
+        }
+    }
+
     @Test
+    @DisplayName("When URI is valid Then Return accountID")
     void accountId()
     {
         Long expected = 123L;

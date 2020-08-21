@@ -18,9 +18,9 @@ public class AccountJdbcRepository implements AccountRepository
         this.supplier = supplier;
     }
 
-    public void create(Account account)
+    public Account create(Account account)
     {
-        String insertSql = "INSERT INTO app.account(id, name) values(?,?)";
+        String insertSql = "INSERT INTO app.account(ACCOUNT_ID, ACCOUNT_NM) values(?,?)";
         try(Connection connection = this.supplier.get())
         {
 
@@ -31,6 +31,8 @@ public class AccountJdbcRepository implements AccountRepository
 
                 preparedStatement.execute();
             }
+
+            return account;
         }
         catch (SQLException e) {
             throw new DataException(e);
@@ -39,7 +41,7 @@ public class AccountJdbcRepository implements AccountRepository
 
     public Account findById(Long accountId)
     {
-        String sqlText = "select id,name from app.account  where ACCOUNT_ID = ?";
+        String sqlText = "select ACCOUNT_ID,ACCOUNT_NM from app.account  where ACCOUNT_ID = ?";
 
         try(Connection connection = supplier.get())
         {
@@ -66,9 +68,9 @@ public class AccountJdbcRepository implements AccountRepository
 
 
 
-    public void update(Account account)
+    public Account update(Account account)
     {
-        String insertSql = "UPDATE  app.account set  name = ? where id = ?";
+        String insertSql = "UPDATE  app.account set ACCOUNT_NM = ? where ACCOUNT_ID = ?";
         try(Connection connection = this.supplier.get())
         {
 
@@ -79,22 +81,23 @@ public class AccountJdbcRepository implements AccountRepository
 
                 preparedStatement.execute();
             }
+            return account;
         }
         catch (SQLException e) {
             throw new DataException(e);
         }
     }
 
-    public void deleteAccountById(Long accountId)
+    public boolean deleteAccountById(Long accountId)
     {
-        String insertSql = "DELETE from  app.account where id = ?";
+        String insertSql = "DELETE from  app.account where ACCOUNT_ID = ?";
         try(Connection connection = this.supplier.get())
         {
             try(PreparedStatement preparedStatement = connection.prepareStatement(insertSql))
             {
                 preparedStatement.setLong(1,accountId);
 
-                preparedStatement.execute();
+                return preparedStatement.executeUpdate() > 0;
             }
         }
         catch (SQLException e) {

@@ -1,6 +1,6 @@
 create schema APP;
 
 create table APP.ACCOUNT (
-    ID int not null,
-    NAME varchar(100) not null
+    ACCOUNT_ID BIGINT not null,
+    ACCOUNT_NM varchar(100) not null
 );

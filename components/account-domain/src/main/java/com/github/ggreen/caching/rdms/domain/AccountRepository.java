@@ -4,11 +4,11 @@ import java.sql.SQLException;
 
 public interface AccountRepository
 {
-    public void create(Account account);
+    public Account create(Account account);
 
     public Account findById(Long accountId);
 
-    public void update(Account account);
+    public Account update(Account account);
 
-    public void deleteAccountById(Long accountId);
+    public boolean deleteAccountById(Long accountId);
 }

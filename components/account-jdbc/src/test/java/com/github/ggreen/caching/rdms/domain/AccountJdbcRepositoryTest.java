@@ -9,8 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Supplier;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -56,7 +56,8 @@ class AccountJdbcRepositoryTest
         Account expected = new JavaBeanGeneratorCreator<Account>(Account.class)
                 .randomizeAll().create();
 
-        subject.create(expected);
+        Account actual = subject.create(expected);
+        assertNotNull(actual);
         verify(preparedStatement).setLong(1, expected.getId());
         verify(preparedStatement).setString(2, expected.getName());
         verify(preparedStatement).execute();
@@ -68,7 +69,8 @@ class AccountJdbcRepositoryTest
         Account expected = new JavaBeanGeneratorCreator<Account>(Account.class)
                 .randomizeAll().create();
 
-        subject.update(expected);
+        Account actual = subject.update(expected);
+        assertNotNull(actual);
         verify(preparedStatement).setLong(2, expected.getId());
         verify(preparedStatement).setString(1, expected.getName());
         verify(preparedStatement).execute();
@@ -86,9 +88,19 @@ class AccountJdbcRepositoryTest
     void deleteAccountById() throws SQLException
     {
         Long expected = 2L;
-        subject.deleteAccountById(expected);
+        assertTrue(subject.deleteAccountById(expected));
         verify(preparedStatement).setLong(1, expected);
         verify(preparedStatement).execute();
+    }
+
+    @Test
+    void deleteAccountById_when_given_invalid_id_return_false() throws SQLException
+    {
+        Long expected = 2L;
+        when(preparedStatement.executeUpdate()).thenReturn(0);
+        assertFalse(subject.deleteAccountById(expected));
+        verify(preparedStatement).setLong(1, expected);
+        verify(preparedStatement).executeUpdate();
     }
 
 }
