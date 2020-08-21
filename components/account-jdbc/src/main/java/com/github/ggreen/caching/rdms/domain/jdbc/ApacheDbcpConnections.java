@@ -20,10 +20,10 @@ public class ApacheDbcpConnections implements Supplier<Connection>
     {
         this.dataSource = dataSource;
 
-        this.dataSource.setUrl(settings.getProperty("jdbc.url"));
-        this.dataSource.setDriverClassName(settings.getProperty("jdbc.driver.class.name"));
-        this.dataSource.setUsername(settings.getProperty("jdbc.username"));
-        this.dataSource.setPassword(settings.getProperty("jdbc.password"));
+        this.dataSource.setUrl(settings.getProperty("JDBC_URL"));
+        this.dataSource.setDriverClassName(settings.getProperty("JDBC_DRIVER_CLASS_NAME"));
+        this.dataSource.setUsername(settings.getProperty("JDBC_USERNAME"));
+        this.dataSource.setPassword(settings.getProperty("JDBC_PASSWORD"));
 
     }
 

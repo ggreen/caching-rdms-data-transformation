@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AccountMigrationAppTest
 {
