@@ -35,13 +35,16 @@ export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
 
 ## Migration
 
-
-
+### JDBC/DB2
 
 export baseline=true
 
-
 java -jar applications/account-db-migrations/target/account-db-migrations-1.0-SNAPSHOT.jar 
+
+## Data Pipeline
+
+java -jar applications/account-db-cache-batch-pipeline/target/account-db-cache-batch-pipeline-1.0-SNAPSHOT.jar 
+
 
 # Running Service
 
