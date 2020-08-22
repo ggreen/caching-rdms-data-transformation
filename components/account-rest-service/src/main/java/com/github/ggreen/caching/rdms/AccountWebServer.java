@@ -1,11 +1,6 @@
 package com.github.ggreen.caching.rdms;
 
-import java.net.URI;
-import java.net.URL;
-
 import nyla.solutions.core.exception.FatalException;
-import nyla.solutions.core.exception.SystemException;
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -14,6 +9,8 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.servlet.http.HttpServlet;
+import java.net.URI;
+import java.net.URL;
 
 public class AccountWebServer
 {

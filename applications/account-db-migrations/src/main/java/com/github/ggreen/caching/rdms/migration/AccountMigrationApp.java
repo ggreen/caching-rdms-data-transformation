@@ -7,6 +7,9 @@ import org.flywaydb.core.Flyway;
 public class AccountMigrationApp
 {
 
+    // Whether to automatically call baseline when migrate is executed against a non-empty schema wi
+    private static final String BASELINE_ON_PROP = "baseline";
+
     public static void main(String[] args)
     {
         Settings settings = Config.loadArgs(args);
@@ -15,11 +18,11 @@ public class AccountMigrationApp
         //String args[] = {"--username="+user,"--driver="+driver,"--url="+url,"--password="+password};
         // Create the Flyway instance and point it to the database
         Flyway flyway = Flyway.configure()
-
+                              .baselineOnMigrate(Config.getPropertyBoolean(BASELINE_ON_PROP))
                               .dataSource(
-                                      settings.getProperty("url"),
-                                      settings.getProperty("username"),
-                                      settings.getProperty("password"))
+                                      settings.getProperty("JDBC_URL"),
+                                      settings.getProperty("JDBC_USERNAME"),
+                                      settings.getProperty("JDBC_PASSWORD"))
 
                               .load();
 

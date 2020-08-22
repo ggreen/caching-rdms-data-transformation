@@ -1,7 +1,5 @@
 package com.github.ggreen.caching.rdms.domain;
 
-import java.sql.SQLException;
-
 public interface AccountRepository
 {
     public Account create(Account account);

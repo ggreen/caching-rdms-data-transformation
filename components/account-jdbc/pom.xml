@@ -40,6 +40,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.ibm.db2</groupId>
+            <artifactId>jcc</artifactId>
+            <version>11.1.4.4</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.nyla-solutions</groupId>
             <artifactId>nyla.solutions.core</artifactId>
             <version>1.3.2-SNAPSHOT</version>

@@ -21,6 +21,7 @@
         <module>components/account-jdbc-rest-service</module>
         <module>components/account-geode-rest-service</module>
         <module>applications/account-db-migrations</module>
+        <module>applications/account-db-cache-batch-pipeline</module>
         <module>applications/account-db-data-service</module>
     </modules>
     <dependencies>

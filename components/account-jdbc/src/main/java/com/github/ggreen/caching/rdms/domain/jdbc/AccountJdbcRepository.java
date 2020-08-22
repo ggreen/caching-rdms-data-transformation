@@ -3,10 +3,11 @@ package com.github.ggreen.caching.rdms.domain.jdbc;
 import com.github.ggreen.caching.rdms.domain.Account;
 import com.github.ggreen.caching.rdms.domain.AccountRepository;
 import nyla.solutions.core.exception.DataException;
-import nyla.solutions.core.patterns.jdbc.Sql;
 
-import java.sql.*;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.function.Supplier;
 
 public class AccountJdbcRepository implements AccountRepository
