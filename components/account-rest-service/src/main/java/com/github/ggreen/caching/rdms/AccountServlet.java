@@ -69,8 +69,14 @@ public class AccountServlet extends HttpServlet
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        Account account = toAccount(request);
-        this.repository.create(account);
+        try {
+            Account account = toAccount(request);
+            this.repository.create(account);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     protected Account toAccount(HttpServletRequest request) throws IOException

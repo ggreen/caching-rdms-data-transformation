@@ -3,11 +3,9 @@ package com.github.ggreen.caching.rdms;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ggreen.caching.rdms.domain.Account;
-import com.github.ggreen.caching.rdms.domain.jdbc.ApacheDbcpConnections;
-import nyla.solutions.core.io.IO;
 import nyla.solutions.core.patterns.creational.generator.FullNameCreator;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
-import nyla.solutions.core.patterns.jdbc.Sql;
+import nyla.solutions.core.patterns.servicefactory.ConfigServiceFactory;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -30,6 +28,8 @@ class AccountAppTest
 {
     private static Thread thread;
     private static AccountApp app;
+    private static Runnable embeddedSetup;
+
     private Account expected;
     private String expectedJson;
 
@@ -45,15 +45,10 @@ class AccountAppTest
     @BeforeAll
     static void beforeAll() throws IOException, SQLException
     {
-        System.setProperty("SERVLET_CLASS_NAME",AccountDbServlet.class.getName());
+        embeddedSetup = ConfigServiceFactory
+                .getConfigServiceFactoryInstance().create("embeddedSetup");
 
-        String setUpSql = IO.readFile("../account-db-migrations/src/main/resources/db/migration/V1__INIT_ACCT_DB.sql");
-
-        Sql sql = new Sql();
-        ApacheDbcpConnections connections = new ApacheDbcpConnections();
-        String dropSql = "DROP SCHEMA IF EXISTS APP CASCADE";
-        sql.execute(connections.get(),dropSql);
-        sql.execute(connections.get(),setUpSql);
+        embeddedSetup.run();
 
 
         app = AccountApp.getInstance();
@@ -63,6 +58,8 @@ class AccountAppTest
 
 
     }
+
+
 
     @Test
     void home_returns_200() throws InterruptedException, ExecutionException, TimeoutException, IOException
@@ -83,6 +80,11 @@ class AccountAppTest
         String uri = "http://localhost:8080/accounts";
         HttpPost httpPost = new HttpPost(uri);
         String expectedJson = toAccountJson();
+        verifyCreateAccount(httpPost, expectedJson);
+    }
+
+    private void verifyCreateAccount(HttpPost httpPost, String expectedJson) throws IOException
+    {
         StringEntity httpEntity = new StringEntity(expectedJson);
         httpPost.setEntity(httpEntity);
 
@@ -127,6 +129,9 @@ class AccountAppTest
         String uri = "http://localhost:8080/accounts/"+expected.getId();
         HttpDelete httpDelete = new HttpDelete(uri);
         expectedJson = toAccountJson();
+
+        verifyCreateAccount(new HttpPost(uri), expectedJson);
+
 
         StringEntity httpEntity = new StringEntity(expectedJson);
         String actual;
@@ -174,10 +179,15 @@ class AccountAppTest
     }
 
     @AfterAll
-    static void tearDown() throws InterruptedException
+    static void tearDown() throws Exception
     {
         app.stop();
         thread.join();
+
+        if(embeddedSetup instanceof AutoCloseable)
+        {
+            ((AutoCloseable)embeddedSetup).close();
+        }
     }
 
     @Test

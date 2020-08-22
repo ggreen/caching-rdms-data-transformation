@@ -33,7 +33,7 @@ class AccountApp
             if(app != null)
                 return app;
 
-            Class<? extends HttpServlet> servletClass = Config.getPropertyClass("SERVLET_CLASS_NAME",AccountDbServlet.class);
+            Class<? extends HttpServlet> servletClass = Config.getPropertyClass("SERVLET_CLASS_NAME");
 
             //Class<? extends HttpServlet> servletClass, String pathPattern
             app = new AccountApp(new AccountWebServer(

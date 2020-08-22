@@ -5,10 +5,13 @@ import java.net.URL;
 
 import nyla.solutions.core.exception.FatalException;
 import nyla.solutions.core.exception.SystemException;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.servlet.http.HttpServlet;
 
@@ -23,7 +26,12 @@ public class AccountWebServer
         this.servletClass = servletClass;
         this.pathPattern = pathPattern;
 
-        server = new Server(8080);
+        server = new Server(new QueuedThreadPool(200));
+
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(8080);
+        server.addConnector(connector);
+
     }
 
     public void run() throws Exception
