@@ -13,44 +13,13 @@ import java.util.function.Consumer;
 
 class AccountCacheBatchApp
 {
-    private final SelectResultSetConverterSupplier<Account> supplier;
-    private final static String selectSql = "select * from APP.ACCOUNT";
-    private Consumer<List<Account>> geodeConsumer;
 
-
-    public AccountCacheBatchApp() throws SQLException
-    {
-        this( new SelectResultSetConverterSupplier<Account>(
-                new ApacheDbcpConnections(),
-                new AccountResultSetConverter(),
-                selectSql),
-                new GeodeConsumer());
-    }
-    public AccountCacheBatchApp(SelectResultSetConverterSupplier<Account> supplier, Consumer<List<Account>> geodeConsumer)
-            throws SQLException
-    {
-        this.supplier = supplier;
-
-        this.geodeConsumer = geodeConsumer;
-    }
-
-    public BatchReport execute() throws SQLException
-    {
-
-        BatchJob<Account, Account> job
-                = BatchJob.builder()
-                          .supplier(supplier)
-                          .consumer(geodeConsumer)
-                          .build();
-
-        return job.execute();
-
-    }
 
     public static void main(String[] args)
     {
         try {
-            BatchReport batchReport = new AccountCacheBatchApp().execute();
+            BatchReport batchReport = new AccountDbBatch(new GeodeConsumer())
+                    .execute();
             System.out.println(batchReport);
         }
         catch (SQLException e) {
