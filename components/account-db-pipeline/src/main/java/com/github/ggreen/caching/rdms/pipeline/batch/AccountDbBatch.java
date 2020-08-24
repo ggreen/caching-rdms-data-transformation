@@ -1,7 +1,8 @@
-package com.github.ggreen.caching.rdms.pipeline;
+package com.github.ggreen.caching.rdms.pipeline.batch;
 
 import com.github.ggreen.caching.rdms.domain.Account;
 import com.github.ggreen.caching.rdms.domain.jdbc.ApacheDbcpConnections;
+import com.github.ggreen.caching.rdms.pipeline.AccountResultSetConverter;
 import nyla.solutions.core.exception.SystemException;
 import nyla.solutions.core.patterns.batch.BatchJob;
 import nyla.solutions.core.patterns.batch.BatchReport;
@@ -11,27 +12,27 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.function.Consumer;
 
-class AccountCacheBatchApp
+public class AccountDbBatch
 {
     private final SelectResultSetConverterSupplier<Account> supplier;
     private final static String selectSql = "select * from APP.ACCOUNT";
-    private Consumer<List<Account>> geodeConsumer;
+    private Consumer<List<Account>> consumer;
 
 
-    public AccountCacheBatchApp() throws SQLException
+    public AccountDbBatch(Consumer<List<Account>> consumer) throws SQLException
     {
         this( new SelectResultSetConverterSupplier<Account>(
                 new ApacheDbcpConnections(),
                 new AccountResultSetConverter(),
                 selectSql),
-                new GeodeConsumer());
+                consumer);
     }
-    public AccountCacheBatchApp(SelectResultSetConverterSupplier<Account> supplier, Consumer<List<Account>> geodeConsumer)
+    public AccountDbBatch(SelectResultSetConverterSupplier<Account> supplier, Consumer<List<Account>> consumer)
             throws SQLException
     {
         this.supplier = supplier;
 
-        this.geodeConsumer = geodeConsumer;
+        this.consumer = consumer;
     }
 
     public BatchReport execute() throws SQLException
@@ -40,22 +41,12 @@ class AccountCacheBatchApp
         BatchJob<Account, Account> job
                 = BatchJob.builder()
                           .supplier(supplier)
-                          .consumer(geodeConsumer)
+                          .consumer(consumer)
                           .build();
 
         return job.execute();
 
     }
 
-    public static void main(String[] args)
-    {
-        try {
-            BatchReport batchReport = new AccountCacheBatchApp().execute();
-            System.out.println(batchReport);
-        }
-        catch (SQLException e) {
-            throw new SystemException(e);
-        }
-    }
 
 }
