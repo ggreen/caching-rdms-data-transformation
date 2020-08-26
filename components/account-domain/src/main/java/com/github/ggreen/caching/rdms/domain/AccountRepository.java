@@ -9,4 +9,6 @@ public interface AccountRepository
     public Account update(Account account);
 
     public boolean deleteAccountById(Long accountId);
+
+    Account save(Account account);
 }

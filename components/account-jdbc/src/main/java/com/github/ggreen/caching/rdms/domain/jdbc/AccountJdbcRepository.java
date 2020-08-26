@@ -14,6 +14,10 @@ public class AccountJdbcRepository implements AccountRepository
 {
     private final Supplier<Connection> supplier;
 
+    public AccountJdbcRepository()
+    {
+        this(new ApacheDbcpConnections());
+    }
     public AccountJdbcRepository(Supplier<Connection> supplier)
     {
         this.supplier = supplier;
@@ -67,22 +71,25 @@ public class AccountJdbcRepository implements AccountRepository
         }
     }
 
-
-
     public Account update(Account account)
+    {
+        executeUpdate(account);
+
+        return account;
+    }
+
+    private int executeUpdate(Account account)
     {
         String insertSql = "UPDATE  app.account set ACCOUNT_NM = ? where ACCOUNT_ID = ?";
         try(Connection connection = this.supplier.get())
         {
-
             try(PreparedStatement preparedStatement = connection.prepareStatement(insertSql))
             {
-                preparedStatement.setString(1,account.getName());
-                preparedStatement.setLong(2,account.getId());
+                preparedStatement.setString(1, account.getName());
+                preparedStatement.setLong(2, account.getId());
 
-                preparedStatement.execute();
+                return preparedStatement.executeUpdate();
             }
-            return account;
         }
         catch (SQLException e) {
             throw new DataException(e);
@@ -104,5 +111,15 @@ public class AccountJdbcRepository implements AccountRepository
         catch (SQLException e) {
             throw new DataException(e);
         }
+    }
+
+    @Override
+    public Account save(Account account)
+    {
+        if(executeUpdate(account) ==0)
+        {
+            return create(account);
+        }
+        return account;
     }
 }

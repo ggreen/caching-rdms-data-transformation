@@ -49,6 +49,11 @@ public class AccountGeodeRepository implements AccountRepository
     {
         accountRegion.remove(accountId);
         return true;
+    }
 
+    @Override
+    public Account save(Account account)
+    {
+        return update(account);
     }
 }

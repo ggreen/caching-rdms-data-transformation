@@ -16,7 +16,7 @@ public class AccountDbSource implements Runnable
     public AccountDbSource() throws SQLException
     {
         this.batch = new AccountDbBatch(new AccountKafkaSender());
-        sleepSeconds = Config.getPropertyInteger("ACCOUNT_SOURCE_FETCH_SECS");
+        sleepSeconds = Config.getPropertyInteger("ACCOUNT_SOURCE_FETCH_SECS",5);
     }
     public AccountDbSource(AccountDbBatch batch, int sleepSeconds)
     {

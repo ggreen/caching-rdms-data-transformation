@@ -20,14 +20,14 @@ public class AccountKafkaSender implements Consumer<List<Account>>, AutoCloseabl
     public AccountKafkaSender()
     {
         Properties props = new Properties();
-        props.put("bootstrap.servers", Config.getProperty("KAFKA_BOOTSTRAP_SERVERS"));
+        props.put("bootstrap.servers", Config.getProperty("KAFKA_BOOTSTRAP_SERVERS","localhost:9092"));
         props.put("acks", "all");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
         this.producer = new KafkaProducer<>(props);;
         this.accountToJson = new AccountToJson();
-        this.topic = Config.getProperty("KAFKA_TOPIC");
+        this.topic = Config.getProperty("KAFKA_TOPIC","accounts");
     }
 
     public AccountKafkaSender(Producer<String, String> producer, AccountToJson accountToJson, String topic)

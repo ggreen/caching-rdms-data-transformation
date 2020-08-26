@@ -24,7 +24,6 @@ class AccountJdbcRepositoryTest
     private PreparedStatement preparedStatement;
     private ResultSet resultSet = mock(ResultSet.class);
 
-
     @BeforeEach
     void setUp() throws SQLException
     {
@@ -40,15 +39,11 @@ class AccountJdbcRepositoryTest
     @Test
     void findById() throws SQLException
     {
-
         when(resultSet.next()).thenReturn(true);
-
         Account account = new Account();
-
         Long accountId = 1L;
         Account actual = subject.findById(accountId);
         assertNotNull(actual);
-
     }
 
     @Test
@@ -103,5 +98,19 @@ class AccountJdbcRepositoryTest
         verify(preparedStatement).setLong(1, expected);
         verify(preparedStatement).executeUpdate();
     }
+
+    @Test
+    void save() throws SQLException
+    {
+        Account expected = new JavaBeanGeneratorCreator<Account>(Account.class)
+                .randomizeAll().create();
+
+        Account actual = subject.save(expected);
+        assertNotNull(actual);
+        verify(preparedStatement).setLong(2, expected.getId());
+        verify(preparedStatement).setString(1, expected.getName());
+        verify(preparedStatement).execute();
+    }
+
 
 }

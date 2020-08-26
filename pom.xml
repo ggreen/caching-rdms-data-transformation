@@ -25,6 +25,7 @@
         <module>applications/account-db-cache-batch-pipeline</module>
         <module>applications/account-db-data-service</module>
         <module>applications/account-db-source-stream-pipeline</module>
+        <module>applications/account-db-sink-stream-pipeline</module>
     </modules>
     <dependencies>
         <dependency>

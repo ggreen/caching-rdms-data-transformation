@@ -17,13 +17,11 @@ class AccountGeodeRepositoryTest
     private AccountGeodeRepository subject;
     private Account expected;
 
-
     @BeforeEach
     void setUp()
     {
         region = mock(Region.class);
         subject = new AccountGeodeRepository(region);
-
         expected = new JavaBeanGeneratorCreator<>(Account.class)
                 .randomizeAll().create();
     }
@@ -31,11 +29,9 @@ class AccountGeodeRepositoryTest
     @Test
     void create()
     {
-
         Account actual = subject.create(expected);
         assertEquals(expected,actual);
         verify(region).create(actual.getId(),actual);
-
     }
 
     @Test
@@ -53,9 +49,15 @@ class AccountGeodeRepositoryTest
         Account actual = subject.update(expected);
         assertEquals(expected,actual);
         verify(region).put(actual.getId(),actual);
-
     }
 
+    @Test
+    void save()
+    {
+        Account actual = subject.save(expected);
+        assertEquals(expected,actual);
+        verify(region).put(actual.getId(),actual);
+    }
 
     @Test
     void deleteAccountById_When_found_returns_true()

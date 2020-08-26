@@ -28,6 +28,7 @@ security
 
 
 export SERVLET_CLASS_NAME=com.github.ggreen.caching.rdms.AccountDbServlet
+export CRYPTION_KEY=APACHECON
 export JDBC_URL=jdbc:db2://localhost:50000/testdb
 export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
 export JDBC_USERNAME=db2inst1
@@ -49,3 +50,8 @@ java -jar applications/account-db-cache-batch-pipeline/target/account-db-cache-b
 # Running Service
 
 java -jar applications/account-db-data-service/target/account-db-data-service-1.0-SNAPSHOT.jar 
+
+
+# Account Sink
+
+export KAFKA_APPLICATION_ID_CONFIG=applications-sink
