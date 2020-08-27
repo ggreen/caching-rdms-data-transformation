@@ -8,6 +8,9 @@ import nyla.solutions.core.util.Debugger;
 
 import java.sql.SQLException;
 
+/**
+ * @author Gregory Green
+ */
 public class AccountDbSource implements Runnable
 {
     private final AccountDbBatch batch;

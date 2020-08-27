@@ -2,8 +2,9 @@ package com.github.ggreen.caching.rdms;
 
 import com.github.ggreen.caching.rdms.domain.Account;
 import com.github.ggreen.caching.rdms.domain.AccountRepository;
-import com.github.ggreen.caching.rdms.domain.jdbc.AccountJdbcRepository;
+import com.github.ggreen.caching.rdms.jdbc.AccountJdbcRepository;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
+import nyla.solutions.core.patterns.creational.servicefactory.ServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.*;
 public class AccountServletTest
 {
     private AccountRepository repository;
-    private AccountServlet subject;
+    private AccountRestServlet subject;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private PrintWriter printWriter;
@@ -41,7 +42,7 @@ public class AccountServletTest
         repository = mock(AccountJdbcRepository.class);
         acctToJSon = mock(Function.class);
         jsonToAccount = mock(Function.class);
-        subject = new AccountServlet(repository, acctToJSon,jsonToAccount);
+        subject = new AccountRestServlet(repository, acctToJSon,jsonToAccount);
         request = mock(HttpServletRequest.class);
 
         reader = mock(BufferedReader.class);
@@ -49,6 +50,16 @@ public class AccountServletTest
         response = mock(HttpServletResponse.class);
         printWriter = mock(PrintWriter.class);
         when(response.getWriter()).thenReturn(printWriter);
+    }
+
+
+    @Test
+    void createWithServiceFactory()
+    {
+        ServiceFactory serviceFactory = mock(ServiceFactory.class);
+
+        subject = new AccountRestServlet(serviceFactory);
+        verify(serviceFactory).create(anyString());
     }
 
     @Test

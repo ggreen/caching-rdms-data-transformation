@@ -3,7 +3,7 @@ package com.github.ggreen.caching.rdms.pipeline;
 import com.github.ggreen.caching.rdms.domain.Account;
 import com.github.ggreen.caching.rdms.domain.AccountRepository;
 import com.github.ggreen.caching.rdms.domain.JsonToAccount;
-import com.github.ggreen.caching.rdms.domain.jdbc.AccountGeodeRepository;
+import com.github.ggreen.caching.rdms.geode.AccountGeodeRepository;
 import nyla.solutions.core.util.Config;
 import nyla.solutions.core.util.settings.Settings;
 import org.apache.kafka.common.serialization.Serdes;
@@ -15,6 +15,9 @@ import org.apache.kafka.streams.kstream.KStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * @author Gregory Green
+ */
 public class AccountGeodeSink
 {
     private final StreamsBuilder builder;
@@ -83,6 +86,5 @@ public class AccountGeodeSink
                 sink.properties);
 
         streams.start();
-        System.in.read();
     }
 }

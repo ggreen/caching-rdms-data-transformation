@@ -6,10 +6,11 @@ import nyla.solutions.core.patterns.batch.BatchReport;
 
 import java.sql.SQLException;
 
+/**
+ * @author Gregory Green
+ */
 class AccountCacheBatchApp
 {
-
-
     public static void main(String[] args)
     {
         try {

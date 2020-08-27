@@ -39,8 +39,11 @@ class AccountGeodeSinkTest
         when(builder.stream(anyString())).thenReturn(kStream);
         String property = "{}";
         when(settings.getProperty(anyString())).thenReturn(property);
+        when(settings.getProperty(anyString(),anyString())).thenReturn(property);
         Class propertyClass = String.class;
         when(settings.getPropertyClass(anyString())).thenReturn(propertyClass);
+        when(settings.getPropertyClass(anyString(),any(Class.class))).thenReturn(propertyClass);
+
 
         subject = new AccountGeodeSink(builder,jsonToAccount,repository,settings);
     }
@@ -48,10 +51,10 @@ class AccountGeodeSinkTest
     @Test
     void construct() throws IOException
     {
-        verify(builder).stream(anyString());
-        verify(kStream).foreach(any());
-        verify(settings,atLeastOnce()).getProperty(any());
-        verify(settings).getPropertyClass(any());
+        verify(builder,atLeastOnce()).stream(anyString());
+        verify(kStream,atLeastOnce()).foreach(any());
+        verify(settings,atLeastOnce()).getProperty(anyString(),anyString());
+        verify(settings,atLeastOnce()).getPropertyClass(any(),any(Class.class));
 
     }
 

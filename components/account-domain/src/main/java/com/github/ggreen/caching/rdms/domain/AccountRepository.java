@@ -1,5 +1,8 @@
 package com.github.ggreen.caching.rdms.domain;
 
+/**
+ * @author Gregory Green
+ */
 public interface AccountRepository
 {
     public Account create(Account account);

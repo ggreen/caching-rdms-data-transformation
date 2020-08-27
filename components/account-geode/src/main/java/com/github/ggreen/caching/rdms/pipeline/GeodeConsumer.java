@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * @author Gregory Green
+ */
 public class GeodeConsumer implements Consumer<List<Account>>
 {
     private final Region<Long, Account> region;

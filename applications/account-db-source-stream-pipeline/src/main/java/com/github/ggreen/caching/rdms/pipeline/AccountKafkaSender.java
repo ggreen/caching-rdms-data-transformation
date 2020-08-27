@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+/**
+ * @author Gregory Green
+ */
 public class AccountKafkaSender implements Consumer<List<Account>>, AutoCloseable
 {
     private final Producer<String, String> producer;

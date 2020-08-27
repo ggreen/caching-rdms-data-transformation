@@ -1,6 +1,6 @@
 package com.github.ggreen.caching.rdms.domain;
 
-import com.github.ggreen.caching.rdms.domain.jdbc.AccountJdbcRepository;
+import com.github.ggreen.caching.rdms.jdbc.AccountJdbcRepository;
 import nyla.solutions.core.exception.DataException;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,9 +67,9 @@ class AccountJdbcRepositoryTest
 
         Account actual = subject.update(expected);
         assertNotNull(actual);
-        verify(preparedStatement).setLong(2, expected.getId());
-        verify(preparedStatement).setString(1, expected.getName());
-        verify(preparedStatement).execute();
+        verify(preparedStatement,atLeastOnce()).setLong(2, expected.getId());
+        verify(preparedStatement,atLeastOnce()).setString(1, expected.getName());
+        verify(preparedStatement,atLeastOnce()).executeUpdate();
     }
 
     @Test
@@ -84,9 +84,10 @@ class AccountJdbcRepositoryTest
     void deleteAccountById() throws SQLException
     {
         Long expected = 2L;
+        when(preparedStatement.executeUpdate()).thenReturn(1);
         assertTrue(subject.deleteAccountById(expected));
         verify(preparedStatement).setLong(1, expected);
-        verify(preparedStatement).execute();
+        verify(preparedStatement,atLeastOnce()).executeUpdate();
     }
 
     @Test
@@ -107,10 +108,9 @@ class AccountJdbcRepositoryTest
 
         Account actual = subject.save(expected);
         assertNotNull(actual);
-        verify(preparedStatement).setLong(2, expected.getId());
-        verify(preparedStatement).setString(1, expected.getName());
-        verify(preparedStatement).execute();
+        verify(preparedStatement,atLeastOnce()).setLong(2, expected.getId());
+        verify(preparedStatement,atLeastOnce()).setString(1, expected.getName());
+        verify(preparedStatement,atLeastOnce()).execute();
     }
-
 
 }

@@ -3,9 +3,9 @@ package com.github.ggreen.caching.rdms;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ggreen.caching.rdms.domain.Account;
+import com.github.ggreen.caching.rdms.migration.AccountDbMigrationApp;
 import nyla.solutions.core.patterns.creational.generator.FullNameCreator;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
-import nyla.solutions.core.patterns.creational.servicefactory.ConfigServiceFactory;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -33,6 +33,13 @@ class AccountAppTest
     private Account expected;
     private String expectedJson;
 
+    @BeforeAll
+    public static void init()
+    {
+        String[] args = {};
+        AccountDbMigrationApp.main(args);
+    }
+
     @BeforeEach
     void setUp() throws JsonProcessingException
     {
@@ -45,21 +52,14 @@ class AccountAppTest
     @BeforeAll
     static void beforeAll() throws IOException, SQLException
     {
-        embeddedSetup = ConfigServiceFactory
-                .getConfigServiceFactoryInstance().create("embeddedSetup");
-
-        embeddedSetup.run();
-
+        String[] args = {};
+        AccountDbMigrationApp.main(args);
 
         app = AccountApp.getInstance();
 
         thread = new Thread(()-> app.run());
         thread.start();
-
-
     }
-
-
 
     @Test
     void home_returns_200() throws InterruptedException, ExecutionException, TimeoutException, IOException

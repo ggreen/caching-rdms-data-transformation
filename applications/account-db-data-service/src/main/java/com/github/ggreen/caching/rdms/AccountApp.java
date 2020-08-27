@@ -5,11 +5,13 @@ import nyla.solutions.core.exception.SystemException;
 import nyla.solutions.core.util.Config;
 import nyla.solutions.core.util.Debugger;
 
-import javax.servlet.http.HttpServlet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * @author Gregory Green
+ */
 class AccountApp
 {
     private static AccountApp app;
@@ -33,11 +35,10 @@ class AccountApp
             if(app != null)
                 return app;
 
-            Class<? extends HttpServlet> servletClass = Config.getPropertyClass("SERVLET_CLASS_NAME");
 
             //Class<? extends HttpServlet> servletClass, String pathPattern
             app = new AccountApp(new AccountWebServer(
-                    servletClass,
+                    AccountRestServlet.class,
                     Config.getProperty("SERVLET_PATH_PATTERN","/accounts/*")
             ));
 

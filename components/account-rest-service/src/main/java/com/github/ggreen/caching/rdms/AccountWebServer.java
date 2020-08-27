@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import java.net.URI;
 import java.net.URL;
 
+/**
+ * @author Gregory Green
+ */
 public class AccountWebServer
 {
     private final Class<? extends HttpServlet> servletClass;

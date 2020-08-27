@@ -7,6 +7,9 @@ import nyla.solutions.core.patterns.conversion.Converter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * @author Gregory Green
+ */
 public class AccountResultSetConverter implements Converter<ResultSet, Account>
 {
     private static final String ACCOUNT_ID_COL = "ACCOUNT_ID";

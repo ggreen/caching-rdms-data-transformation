@@ -6,6 +6,9 @@ import nyla.solutions.core.exception.FormatException;
 
 import java.util.function.Function;
 
+/**
+ * @author Gregory Green
+ */
 public class JsonToAccount implements Function<String,Account>
 {
     private final ObjectMapper objectMapper;

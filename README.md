@@ -27,7 +27,7 @@ DBNAME=testdb
 security
 
 
-export SERVLET_CLASS_NAME=com.github.ggreen.caching.rdms.AccountDbServlet
+export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.lookAside.AccountGeodeJdbcRepository
 export CRYPTION_KEY=APACHECON
 export JDBC_URL=jdbc:db2://localhost:50000/testdb
 export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
@@ -38,7 +38,6 @@ export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
 
 ### JDBC/DB2
 
-export baseline=true
 
 java -jar applications/account-db-migrations/target/account-db-migrations-1.0-SNAPSHOT.jar 
 

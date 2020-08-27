@@ -1,7 +1,6 @@
 package com.github.ggreen.caching.rdms.pipeline.batch;
 
 import com.github.ggreen.caching.rdms.domain.Account;
-import com.github.ggreen.caching.rdms.pipeline.batch.AccountDbBatch;
 import nyla.solutions.core.patterns.batch.BatchReport;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
 import nyla.solutions.core.patterns.jdbc.batch.SelectResultSetConverterSupplier;
