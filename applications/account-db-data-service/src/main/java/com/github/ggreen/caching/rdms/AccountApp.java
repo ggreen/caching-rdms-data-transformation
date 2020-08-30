@@ -86,6 +86,7 @@ class AccountApp
 
     public static void main(String[] args)
     {
+        System.out.println("Repository="+ Config.getProperty("FACTORY_REPOSITORY"));
         getInstance().run();
     }
 }

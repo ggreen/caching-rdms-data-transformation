@@ -3,6 +3,7 @@ package com.github.ggreen.caching.rdms.jdbc;
 import com.github.ggreen.caching.rdms.domain.Account;
 import com.github.ggreen.caching.rdms.domain.AccountRepository;
 import nyla.solutions.core.exception.DataException;
+import nyla.solutions.core.util.Debugger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,6 +38,7 @@ public class AccountJdbcRepository implements AccountRepository
                 preparedStatement.setLong(1,account.getId());
                 preparedStatement.setString(2,account.getName());
 
+                Debugger.println(this,insertSql);
                 preparedStatement.execute();
             }
 
@@ -56,13 +58,14 @@ public class AccountJdbcRepository implements AccountRepository
             try(PreparedStatement statement = connection.prepareStatement(sqlText) )
             {
                 statement.setLong(1,accountId);
+                Debugger.println(this,sqlText);
                 try(ResultSet resultSet = statement.executeQuery())
                 {
                     if(!resultSet.next())
                         return null;
 
                     return   Account.builder().id(resultSet.getLong(1))
-                                    .name(resultSet.getString(1))
+                                    .name(resultSet.getString(2))
                                     .build();
 
                 }
@@ -83,18 +86,16 @@ public class AccountJdbcRepository implements AccountRepository
 
     private int executeUpdate(Account account)
     {
-        String insertSql = "UPDATE  app.account set ACCOUNT_NM = ? where ACCOUNT_ID = ?";
+        String updateSql = "UPDATE  app.account set ACCOUNT_NM = ? where ACCOUNT_ID = ?";
         try(Connection connection = this.supplier.get())
         {
 
-            try(PreparedStatement preparedStatement = connection.prepareStatement(insertSql))
+            try(PreparedStatement preparedStatement = connection.prepareStatement(updateSql))
             {
                 preparedStatement.setString(1,account.getName());
                 preparedStatement.setLong(2,account.getId());
-                preparedStatement.setString(1, account.getName());
-                preparedStatement.setLong(2, account.getId());
 
-                preparedStatement.execute();
+                Debugger.println(this,updateSql+" account:"+account);
                 return preparedStatement.executeUpdate();
             }
         }
@@ -105,13 +106,13 @@ public class AccountJdbcRepository implements AccountRepository
 
     public boolean deleteAccountById(Long accountId)
     {
-        String insertSql = "DELETE from  app.account where ACCOUNT_ID = ?";
+        String deleteSql = "DELETE from  app.account where ACCOUNT_ID = ?";
         try(Connection connection = this.supplier.get())
         {
-            try(PreparedStatement preparedStatement = connection.prepareStatement(insertSql))
+            try(PreparedStatement preparedStatement = connection.prepareStatement(deleteSql))
             {
                 preparedStatement.setLong(1,accountId);
-
+                Debugger.println(this,deleteSql);
                 return preparedStatement.executeUpdate() > 0;
             }
         }

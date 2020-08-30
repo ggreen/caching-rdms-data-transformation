@@ -3,32 +3,33 @@ package com.github.ggreen.caching.rdms;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ggreen.caching.rdms.domain.Account;
+import com.github.ggreen.caching.rdms.jdbc.AccountJdbcEmbeddedSetupRunner;
 import com.github.ggreen.caching.rdms.migration.AccountDbMigrationApp;
+import nyla.solutions.core.net.http.Http;
+import nyla.solutions.core.net.http.HttpResponse;
 import nyla.solutions.core.patterns.creational.generator.FullNameCreator;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AccountAppTest
 {
     private static Thread thread;
     private static AccountApp app;
     private static Runnable embeddedSetup;
+    private Http http = new Http();
 
     private Account expected;
     private String expectedJson;
@@ -47,6 +48,10 @@ class AccountAppTest
                 .randomizeAll().create();
 
         expectedJson = toAccountJson();
+
+        new AccountJdbcEmbeddedSetupRunner().run();
+
+
     }
 
     @BeforeAll
@@ -54,10 +59,11 @@ class AccountAppTest
     {
         String[] args = {};
         AccountDbMigrationApp.main(args);
+        new AccountJdbcEmbeddedSetupRunner().run();
 
         app = AccountApp.getInstance();
 
-        thread = new Thread(()-> app.run());
+        thread = new Thread(() -> app.run());
         thread.start();
     }
 
@@ -66,35 +72,39 @@ class AccountAppTest
     {
 
         String uri = "http://localhost:8080";
-        try(CloseableHttpResponse response = requestHttp(new HttpGet(uri)))
-        {
-            assertEquals(200,response.getStatusLine().getStatusCode());
-            String actual = response.toString();
-            assertTrue(actual != null  && actual.length() > 0);
-        }
+        HttpResponse response = http.get(new URL(uri));
+
+        assertEquals(200, response.getStatusCode());
+        String actual = response.toString();
+        assertTrue(actual != null && actual.length() > 0);
+
     }
 
     @Test
     void when_post_then_create_account() throws IOException
     {
         String uri = "http://localhost:8080/accounts";
-        HttpPost httpPost = new HttpPost(uri);
+
         String expectedJson = toAccountJson();
-        verifyCreateAccount(httpPost, expectedJson);
+        verifyPost(uri, expectedJson);
     }
 
-    private void verifyCreateAccount(HttpPost httpPost, String expectedJson) throws IOException
+    private void verifyPost(String uri, String expectedJson) throws IOException
     {
-        StringEntity httpEntity = new StringEntity(expectedJson);
-        httpPost.setEntity(httpEntity);
-
-        try(CloseableHttpResponse response = requestHttp(httpPost))
-        {
-            assertEquals(200,response.getStatusLine().getStatusCode());
-            String actual = response.toString();
-            assertTrue(actual != null  && actual.length() > 0);
-        }
+        HttpResponse response = http.post(new URL(uri), expectedJson);
+        assertEquals(200, response.getStatusCode());
     }
+
+
+    @Test
+    void when_post_then_create_then_update_account() throws IOException
+    {
+        String uri = "http://localhost:8080/accounts";
+        String expectedJson = toAccountJson();
+        verifyPost(uri, expectedJson);
+        verifyPost(uri, expectedJson);
+    }
+
 
     @Test
     void when_put_then_update_account() throws IOException
@@ -102,22 +112,19 @@ class AccountAppTest
 
         String createJSon = expectedJson;
         createAccount(createJSon);
-        expected.setName(new FullNameCreator().create());
+        expected.setName("Updated");
 
-        String uri = "http://localhost:8080/accounts";
-        HttpPut httpPut = new HttpPut(uri);
+        String uri = "http://localhost:8080/accounts/"+expected.getId();
+
         expectedJson = toAccountJson();
+        HttpResponse httpResponse = http.put(new URL(uri),expectedJson);
+        assertTrue(httpResponse.isOk());
 
-        StringEntity httpEntity = new StringEntity(expectedJson);
-        httpPut.setEntity(httpEntity);
-        String actual;
-        try(CloseableHttpResponse response = requestHttp(httpPut))
-        {
-            assertEquals(200,response.getStatusLine().getStatusCode());
-            actual = response.toString();
-        }
-
+        httpResponse = http.get(new URL(uri));
+        assertTrue(httpResponse.isOk());
+        assertThat(httpResponse.getBody()).contains(expected.getName());
     }
+
     @Test
     void when_delete_then_delete_account() throws IOException
     {
@@ -126,25 +133,10 @@ class AccountAppTest
         createAccount(createJSon);
         expected.setName(new FullNameCreator().create());
 
-        String uri = "http://localhost:8080/accounts/"+expected.getId();
-        HttpDelete httpDelete = new HttpDelete(uri);
-        expectedJson = toAccountJson();
+        String uri = "http://localhost:8080/accounts/" + expected.getId();
+        HttpResponse response =http.delete(new URL(uri));
 
-        verifyCreateAccount(new HttpPost(uri), expectedJson);
-
-
-        StringEntity httpEntity = new StringEntity(expectedJson);
-        String actual;
-        try(CloseableHttpResponse response = requestHttp(httpDelete))
-        {
-            assertEquals(200,response.getStatusLine().getStatusCode());
-            actual = response.toString();
-        }
-
-        try(CloseableHttpResponse response = requestHttp(new HttpGet(uri)))
-        {
-            assertEquals(HttpServletResponse.SC_NOT_FOUND,response.getStatusLine().getStatusCode());
-        }
+        assertThrows(FileNotFoundException.class, () -> http.get(new URL(uri)));
 
     }
 
@@ -152,16 +144,11 @@ class AccountAppTest
     private String createAccount(String expectedJson) throws IOException
     {
         String uri = "http://localhost:8080/accounts";
-        HttpPost httpPost = new HttpPost(uri);
-        StringEntity httpEntity = new StringEntity(expectedJson);
-        httpPost.setEntity(httpEntity);
-        String actual;
-        try(CloseableHttpResponse response = requestHttp(httpPost))
-        {
-            assertEquals(200,response.getStatusLine().getStatusCode());
-            actual = response.toString();
-        }
-        return actual;
+
+       HttpResponse response = http.post(new URL(uri),expectedJson);
+        assertTrue(response.isOk());
+
+         return response.getBody();
     }
 
     private String toAccountJson() throws JsonProcessingException
@@ -171,12 +158,6 @@ class AccountAppTest
         return expectedJson;
     }
 
-    private CloseableHttpResponse requestHttp(HttpUriRequest request) throws IOException
-    {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        CloseableHttpResponse response = httpclient.execute(request);
-        return response;
-    }
 
     @AfterAll
     static void tearDown() throws Exception
@@ -184,15 +165,14 @@ class AccountAppTest
         app.stop();
         thread.join();
 
-        if(embeddedSetup instanceof AutoCloseable)
-        {
-            ((AutoCloseable)embeddedSetup).close();
+        if (embeddedSetup instanceof AutoCloseable) {
+            ((AutoCloseable) embeddedSetup).close();
         }
     }
 
     @Test
     void getInstance()
     {
-        assertEquals(AccountApp.getInstance(),AccountApp.getInstance());
+        assertEquals(AccountApp.getInstance(), AccountApp.getInstance());
     }
 }

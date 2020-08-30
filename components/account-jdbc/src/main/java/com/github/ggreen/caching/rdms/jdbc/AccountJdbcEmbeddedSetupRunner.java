@@ -29,14 +29,7 @@ public class AccountJdbcEmbeddedSetupRunner implements  Runnable
     public  void run()
     {
         try {
-            String setUpSql = IO.readFile("../../applications/account-db-migrations/src/main/resources/db/migration/V1__INIT_ACCT_DB.sql");
-
-            String dropSql = "DROP SCHEMA IF EXISTS APP CASCADE";
-            sql.execute(connections.get(),dropSql);
-            sql.execute(connections.get(),setUpSql);
-        }
-        catch (IOException e) {
-           throw new SetupException(e);
+            sql.execute(connections.get(),"delete from app.account");
         }
         catch (SQLException e) {
             throw new CommunicationException(e);

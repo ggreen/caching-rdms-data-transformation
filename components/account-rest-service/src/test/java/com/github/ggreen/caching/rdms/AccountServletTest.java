@@ -73,7 +73,7 @@ public class AccountServletTest
     class WhenCreate
     {
         @Test
-        void given_invalid_account_then_create() throws ServletException, IOException
+        void given_account_then_save() throws ServletException, IOException
         {
             when(request.getReader()).thenReturn(reader);
 
@@ -82,7 +82,7 @@ public class AccountServletTest
 
             subject.doPost(request,response);
             verify(jsonToAccount).apply(anyString());
-            repository.create(any());
+            verify(repository).save(any());
         }
     }
 

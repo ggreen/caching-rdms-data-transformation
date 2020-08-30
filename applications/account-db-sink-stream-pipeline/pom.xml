@@ -104,7 +104,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.ggreen.caching.rdms.pipeline.AccountCacheBatchApp</mainClass>
+                            <mainClass>com.github.ggreen.caching.rdms.pipeline.AccountGeodeSink</mainClass>
                         </manifest>
                         <manifestEntries>
                             <!-- Specified to allow Jetty to know its own Version ID -->

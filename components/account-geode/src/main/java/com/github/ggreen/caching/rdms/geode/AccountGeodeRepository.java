@@ -3,6 +3,7 @@ package com.github.ggreen.caching.rdms.geode;
 import com.github.ggreen.caching.rdms.domain.Account;
 import com.github.ggreen.caching.rdms.domain.AccountRepository;
 import io.pivotal.services.dataTx.geode.client.GeodeClient;
+import nyla.solutions.core.util.Debugger;
 import org.apache.geode.cache.Region;
 
 /**
@@ -30,6 +31,7 @@ public class AccountGeodeRepository implements AccountRepository
     @Override
     public Account create(Account account)
     {
+        Debugger.println(this,"create account:"+account.getId());
         this.accountRegion.create(account.getId(),account);
         return account;
     }
@@ -37,12 +39,14 @@ public class AccountGeodeRepository implements AccountRepository
     @Override
     public Account findById(Long accountId)
     {
+        Debugger.println(this,"read account:"+accountId);
         return accountRegion.get(accountId);
     }
 
     @Override
     public Account update(Account account)
     {
+        Debugger.println(this,"update account:"+account.getId());
         accountRegion.put(account.getId(),account);
         return account;
     }
@@ -50,6 +54,7 @@ public class AccountGeodeRepository implements AccountRepository
     @Override
     public boolean deleteAccountById(Long accountId)
     {
+        Debugger.println(this,"delete account:"+accountId);
         accountRegion.remove(accountId);
         return true;
     }

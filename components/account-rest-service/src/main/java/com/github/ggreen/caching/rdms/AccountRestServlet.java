@@ -90,7 +90,7 @@ public class AccountRestServlet extends HttpServlet
     {
         try {
             Account account = toAccount(request);
-            this.repository.create(account);
+            this.repository.save(account);
         }
         catch (IOException e) {
             e.printStackTrace();
