@@ -1,4 +1,4 @@
-package com.github.ggreen.caching.rdms.jdbc;
+package com.github.ggreen.caching.rdms.geode;
 
 import com.github.ggreen.caching.rdms.geode.AccountGeodeEmbeddedSetupRunner;
 import io.pivotal.services.dataTx.geode.qa.GUnit;

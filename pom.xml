@@ -22,7 +22,7 @@
         <module>components/account-rest-service</module>
         <module>applications/account-db-migrations</module>
         <module>applications/account-db-cache-batch-pipeline</module>
-        <module>applications/account-db-data-service</module>
+        <module>applications/account-db-rest-service</module>
         <module>applications/account-db-source-stream-pipeline</module>
         <module>applications/account-db-sink-stream-pipeline</module>
     </modules>

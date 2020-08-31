@@ -31,7 +31,7 @@ public class AccountGeodeRepository implements AccountRepository
     @Override
     public Account create(Account account)
     {
-        Debugger.println(this,"create account:"+account.getId());
+        Debugger.println(this,"create account");
         this.accountRegion.create(account.getId(),account);
         return account;
     }
@@ -39,14 +39,14 @@ public class AccountGeodeRepository implements AccountRepository
     @Override
     public Account findById(Long accountId)
     {
-        Debugger.println(this,"read account:"+accountId);
+        Debugger.println(this,"read account");
         return accountRegion.get(accountId);
     }
 
     @Override
     public Account update(Account account)
     {
-        Debugger.println(this,"update account:"+account.getId());
+        Debugger.println(this,"update account");
         accountRegion.put(account.getId(),account);
         return account;
     }
@@ -54,7 +54,7 @@ public class AccountGeodeRepository implements AccountRepository
     @Override
     public boolean deleteAccountById(Long accountId)
     {
-        Debugger.println(this,"delete account:"+accountId);
+        Debugger.println(this,"delete account");
         accountRegion.remove(accountId);
         return true;
     }

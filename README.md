@@ -14,11 +14,7 @@ export CRYPTION_KEY=APACHECON
 
 ## Geode Testing
 
-```shell script
 
-export SERVLET_CLASS_NAME=com.github.ggreen.caching.rdms.AccountCacheServlet
-
-```
 
 ## DB2 Testing
 

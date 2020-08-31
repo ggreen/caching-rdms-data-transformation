@@ -43,6 +43,19 @@ public class AccountRestServlet extends HttpServlet
     }
 
     @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        try {
+            Account account = toAccount(request);
+            this.repository.save(account);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         Long accountId = accountId(request);
@@ -83,19 +96,6 @@ public class AccountRestServlet extends HttpServlet
         else
             resp.setStatus(HttpServletResponse.SC_OK);
 
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
-        try {
-            Account account = toAccount(request);
-            this.repository.save(account);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        }
     }
 
     protected Account toAccount(HttpServletRequest request) throws IOException
