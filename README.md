@@ -26,30 +26,55 @@ security
 export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.jdbc.AccountJdbcRepository
 export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.geode.AccountGeodeRepository
 export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.lookAside.AccountGeodeJdbcRepository
-
 export CRYPTION_KEY=APACHECON
 export JDBC_URL=jdbc:db2://localhost:50000/testdb
 export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
 export JDBC_USERNAME=db2inst1
 export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
 
+
 ## Migration
 
 ### JDBC/DB2
 
 
-java -jar applications/account-db-migrations/target/account-db-migrations-1.0-SNAPSHOT.jar 
+java -jar applications/account-db-rest-service/target/account-db-migrations-1.0-SNAPSHOT.jar 
 
 ## Data Pipeline
+export CRYPTION_KEY=APACHECON
+export JDBC_URL=jdbc:db2://localhost:50000/testdb
+export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
+export JDBC_USERNAME=db2inst1
+export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
 
 java -jar applications/account-db-cache-batch-pipeline/target/account-db-cache-batch-pipeline-1.0-SNAPSHOT.jar 
 
 
 # Running Service
 
-java -jar applications/account-db-data-service/target/account-db-data-service-1.0-SNAPSHOT.jar 
+java -jar applications/account-db-rest-service/target/account-db-rest-service-1.0-SNAPSHOT.jar 
+
+
+
+# Account Source
+export CRYPTION_KEY=APACHECON
+export JDBC_URL=jdbc:db2://localhost:50000/testdb
+export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
+export JDBC_USERNAME=db2inst1
+export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
+export KAFKA_APPLICATION_ID_CONFIG=applications-sink
+
+java -jar applications/account-db-source-stream-pipeline/target/account-db-source-stream-pipeline-1.0-SNAPSHOT.jar
 
 
 # Account Sink
-
+export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.jdbc.AccountJdbcRepository
+export CRYPTION_KEY=APACHECON
+export JDBC_URL=jdbc:db2://localhost:50000/testdb
+export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
+export JDBC_USERNAME=db2inst1
+export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
 export KAFKA_APPLICATION_ID_CONFIG=applications-sink
+
+java  -jar applications/account-db-sink-stream-pipeline/target/account-db-sink-stream-pipeline-1.0-SNAPSHOT.jar
+

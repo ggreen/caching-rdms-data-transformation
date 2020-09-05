@@ -9,6 +9,7 @@ import nyla.solutions.core.net.http.Http;
 import nyla.solutions.core.net.http.HttpResponse;
 import nyla.solutions.core.patterns.creational.generator.FullNameCreator;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
+import nyla.solutions.core.util.Config;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,7 @@ class AccountAppTest
 
     private Account expected;
     private String expectedJson;
+    private String serverPort = Config.getProperty("SERVER_PORT");
 
     @BeforeAll
     public static void init()
@@ -71,7 +73,7 @@ class AccountAppTest
     void home_returns_200() throws InterruptedException, ExecutionException, TimeoutException, IOException
     {
 
-        String uri = "http://localhost:8080";
+        String uri = "http://localhost:"+serverPort+"";
         HttpResponse response = http.get(new URL(uri));
 
         assertEquals(200, response.getStatusCode());
@@ -83,7 +85,7 @@ class AccountAppTest
     @Test
     void when_post_then_create_account() throws IOException
     {
-        String uri = "http://localhost:8080/accounts";
+        String uri = "http://localhost:"+serverPort+"/accounts";
 
         String expectedJson = toAccountJson();
         verifyPost(uri, expectedJson);
@@ -99,7 +101,7 @@ class AccountAppTest
     @Test
     void when_post_then_create_then_update_account() throws IOException
     {
-        String uri = "http://localhost:8080/accounts";
+        String uri = "http://localhost:"+serverPort+"/accounts";
         String expectedJson = toAccountJson();
         verifyPost(uri, expectedJson);
         verifyPost(uri, expectedJson);
@@ -114,7 +116,7 @@ class AccountAppTest
         createAccount(createJSon);
         expected.setName("Updated");
 
-        String uri = "http://localhost:8080/accounts/"+expected.getId();
+        String uri = "http://localhost:"+serverPort+"/accounts/"+expected.getId();
 
         expectedJson = toAccountJson();
         HttpResponse httpResponse = http.put(new URL(uri),expectedJson);
@@ -133,7 +135,7 @@ class AccountAppTest
         createAccount(createJSon);
         expected.setName(new FullNameCreator().create());
 
-        String uri = "http://localhost:8080/accounts/" + expected.getId();
+        String uri = "http://localhost:"+serverPort+"/accounts/" + expected.getId();
         HttpResponse response =http.delete(new URL(uri));
 
         assertThrows(FileNotFoundException.class, () -> http.get(new URL(uri)));
@@ -143,7 +145,7 @@ class AccountAppTest
 
     private String createAccount(String expectedJson) throws IOException
     {
-        String uri = "http://localhost:8080/accounts";
+        String uri = "http://localhost:"+serverPort+"/accounts";
 
        HttpResponse response = http.post(new URL(uri),expectedJson);
         assertTrue(response.isOk());

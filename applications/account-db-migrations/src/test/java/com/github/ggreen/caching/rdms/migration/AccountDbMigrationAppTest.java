@@ -1,6 +1,7 @@
 package com.github.ggreen.caching.rdms.migration;
 
 import nyla.solutions.core.patterns.jdbc.Sql;
+import nyla.solutions.core.util.Config;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -20,6 +21,7 @@ class AccountDbMigrationAppTest
         System.setProperty("JDBC_USERNAME", userName);
         String password = "password";
         System.setProperty("JDBC_PASSWORD", password);
+        Config.reLoad();
         String[] args = {};
         AccountDbMigrationApp.main(args);
 

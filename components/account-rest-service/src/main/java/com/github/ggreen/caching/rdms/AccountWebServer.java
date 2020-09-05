@@ -1,6 +1,7 @@
 package com.github.ggreen.caching.rdms;
 
 import nyla.solutions.core.exception.FatalException;
+import nyla.solutions.core.util.Config;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -20,6 +21,8 @@ public class AccountWebServer
     private final Class<? extends HttpServlet> servletClass;
     private final String pathPattern;
     private final Server server;
+    private final int SERVER_PORT = Config.getPropertyInteger("SERVER_PORT",8080);
+
 
     public AccountWebServer(Class<? extends HttpServlet> servletClass, String pathPattern)
     {
@@ -29,7 +32,8 @@ public class AccountWebServer
         server = new Server(new QueuedThreadPool(200));
 
         ServerConnector connector = new ServerConnector(server);
-        connector.setPort(8080);
+
+        connector.setPort(SERVER_PORT);
         server.addConnector(connector);
 
     }

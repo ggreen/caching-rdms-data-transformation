@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.ggreen</groupId>
-    <artifactId>account-db-data-service</artifactId>
+    <artifactId>account-db-rest-service</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>account-db-data-service</name>
+    <name>account-db-rest-service</name>
     <properties>
         <tomcat.version>8.5.23</tomcat.version>
         <maven.compiler.target>1.11</maven.compiler.target>
