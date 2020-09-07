@@ -48,7 +48,6 @@ export JDBC_USERNAME=db2inst1
 export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
 ```
 
-```
 
 ## Data Pipeline
 
