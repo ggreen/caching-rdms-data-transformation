@@ -49,8 +49,34 @@ export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
 ```
 
 
-## Data Pipeline
 
+
+# Running Service
+
+## JDBC
+
+```shell script
+export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.jdbc.AccountJdbcRepository
+java -jar applications/account-db-rest-service/target/account-db-rest-service-1.0-SNAPSHOT.jar 
+```
+
+## Apache Geode
+
+```shell script
+export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.geode.AccountGeodeRepository
+java -jar applications/account-db-rest-service/target/account-db-rest-service-1.0-SNAPSHOT.jar 
+```
+
+## JDBC/Apache Geode Look Aside Cache
+```shell script
+export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.geode.AccountGeodeRepository
+java -jar applications/account-db-rest-service/target/account-db-rest-service-1.0-SNAPSHOT.jar 
+```
+
+
+# Data Pipeline
+
+## Batch 
 ```shell script
 export CRYPTION_KEY=APACHECON
 export JDBC_URL=jdbc:db2://localhost:50000/testdb
@@ -63,42 +89,27 @@ java -jar applications/account-db-cache-batch-pipeline/target/account-db-cache-b
 ```
 
 
-# Running Service
+## Stream
+
+### Account Source
 
 ```shell script
-java -jar applications/account-db-rest-service/target/account-db-rest-service-1.0-SNAPSHOT.jar 
-```
-
-
-# Account Source
-
-```shell script
-export CRYPTION_KEY=APACHECON
-export JDBC_URL=jdbc:db2://localhost:50000/testdb
-export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
-export JDBC_USERNAME=db2inst1
-export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
-export KAFKA_APPLICATION_ID_CONFIG=applications-sink
+export KAFKA_APPLICATION_ID_CONFIG=applications-source
 
 java -jar applications/account-db-source-stream-pipeline/target/account-db-source-stream-pipeline-1.0-SNAPSHOT.jar
 ```
 
 
-# Account Sink
+### Account Sink
 
 ```shell script
-export CRYPTION_KEY=APACHECON
-export JDBC_URL=jdbc:db2://localhost:50000/testdb
-export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
-export JDBC_USERNAME=db2inst1
-export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
 export KAFKA_APPLICATION_ID_CONFIG=applications-sink
-
 java  -jar applications/account-db-sink-stream-pipeline/target/account-db-sink-stream-pipeline-1.0-SNAPSHOT.jar
 
 ```
 
 
+----------------
 
 # JDBC/DB2 migrations
 
