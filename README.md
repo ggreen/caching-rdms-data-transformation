@@ -38,9 +38,6 @@ The following are common environment variable configuration properties.
 
 
 ```shell script
-export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.jdbc.AccountJdbcRepository
-export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.geode.AccountGeodeRepository
-export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.lookAside.AccountGeodeJdbcRepository
 export CRYPTION_KEY=APACHECON
 export JDBC_URL=jdbc:db2://localhost:50000/testdb
 export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
@@ -69,7 +66,7 @@ java -jar applications/account-db-rest-service/target/account-db-rest-service-1.
 
 ## JDBC/Apache Geode Look Aside Cache
 ```shell script
-export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.geode.AccountGeodeRepository
+export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.lookAside.AccountGeodeJdbcRepository
 java -jar applications/account-db-rest-service/target/account-db-rest-service-1.0-SNAPSHOT.jar 
 ```
 
