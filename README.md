@@ -34,6 +34,9 @@ Application                                                                     
 [account-db-migrations](applications/account-db-migrations)                     | Flyway based database migration
 
 
+The following are common environment variable configuration properties.
+
+
 ```shell script
 export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.jdbc.AccountJdbcRepository
 export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.geode.AccountGeodeRepository
@@ -44,20 +47,6 @@ export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
 export JDBC_USERNAME=db2inst1
 export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
 ```
-
-## Migration
-
-### JDBC/DB2
-
-
-```shell script
-export CRYPTION_KEY=APACHECON
-export JDBC_URL=jdbc:db2://localhost:50000/testdb
-export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
-export JDBC_USERNAME=db2inst1
-export JDBC_PASSWORD={cryption}yHFQacZf7JcIwV4zAW9Xog==
-java -jar applications/account-db-rest-service/target/account-db-migrations-1.0-SNAPSHOT.jar 
-
 
 ```
 
@@ -99,7 +88,6 @@ java -jar applications/account-db-source-stream-pipeline/target/account-db-sourc
 # Account Sink
 
 ```shell script
-export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.jdbc.AccountJdbcRepository
 export CRYPTION_KEY=APACHECON
 export JDBC_URL=jdbc:db2://localhost:50000/testdb
 export JDBC_DRIVER_CLASS_NAME=com.ibm.db2.jcc.DB2Driver
@@ -111,3 +99,13 @@ java  -jar applications/account-db-sink-stream-pipeline/target/account-db-sink-s
 
 ```
 
+
+
+# JDBC/DB2 migrations
+
+Start the JDBC migration.
+
+
+```shell script
+
+java -jar applications/account-db-rest-service/target/account-db-migrations-1.0-SNAPSHOT.jar 
