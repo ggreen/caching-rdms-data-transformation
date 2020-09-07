@@ -18,7 +18,7 @@ The pattern will be applicable to similar solutions using Oracle,
  The following are the highlighted technologies;
  
  - [Apache Geode](https://geode.apache.org/)
- - [Apache Geode](https://kafka.apache.org/) 
+ - [Apache Kafka](https://kafka.apache.org/) 
  
 
 
