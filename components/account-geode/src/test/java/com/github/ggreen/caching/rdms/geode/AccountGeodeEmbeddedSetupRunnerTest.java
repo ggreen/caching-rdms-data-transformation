@@ -1,6 +1,5 @@
 package com.github.ggreen.caching.rdms.geode;
 
-import com.github.ggreen.caching.rdms.geode.AccountGeodeEmbeddedSetupRunner;
 import io.pivotal.services.dataTx.geode.qa.GUnit;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

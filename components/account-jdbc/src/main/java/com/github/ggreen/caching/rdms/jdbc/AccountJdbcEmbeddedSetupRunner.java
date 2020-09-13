@@ -1,11 +1,8 @@
 package com.github.ggreen.caching.rdms.jdbc;
 
 import nyla.solutions.core.exception.CommunicationException;
-import nyla.solutions.core.exception.SetupException;
-import nyla.solutions.core.io.IO;
 import nyla.solutions.core.patterns.jdbc.Sql;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 /**

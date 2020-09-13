@@ -12,7 +12,6 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 
-import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -21,10 +20,8 @@ import java.util.Properties;
 public class AccountGeodeSink
 {
     private final StreamsBuilder builder;
-    private final KStream<String, String> accountStream;
     private final JsonToAccount jsonToAccount;
     private final AccountRepository accountRepository;
-    private final Settings settings;
     private final Properties properties;
 
     public AccountGeodeSink()
@@ -42,7 +39,6 @@ public class AccountGeodeSink
     {
         this.jsonToAccount = jsonToAccount;
         this.accountRepository = accountRepository;
-        this.settings = settings;
 
 
         this.properties = new Properties();
@@ -50,11 +46,8 @@ public class AccountGeodeSink
 
         this.builder = builder;
 
-        this.accountStream = builder.stream("accounts");
-        this.accountStream.foreach((accountId, json) -> receive(accountId, json));
-
-
-
+        KStream<String, String> accountStream = builder.stream("accounts");
+        accountStream.foreach(this::receive);
     }
 
     protected void receive(String key, String json)
@@ -79,7 +72,7 @@ public class AccountGeodeSink
         return properties;
     }
 
-    public static void main(String[] args) throws IOException
+    public static void main(String[] args)
     {
         AccountGeodeSink sink = new AccountGeodeSink();
         KafkaStreams streams = new KafkaStreams(sink.builder.build(),

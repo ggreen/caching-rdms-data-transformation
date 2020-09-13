@@ -3,6 +3,7 @@ package com.github.ggreen.caching.rdms.domain;
 import com.github.ggreen.caching.rdms.jdbc.AccountJdbcRepository;
 import nyla.solutions.core.exception.DataException;
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
+import nyla.solutions.core.util.Scheduler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,11 +40,20 @@ class AccountJdbcRepositoryTest
     @Test
     void findById() throws SQLException
     {
+        Account expected = new JavaBeanGeneratorCreator<>(Account.class)
+                .randomizeAll().create();
         when(resultSet.next()).thenReturn(true);
+        when(resultSet.getString("ACCOUNT_NM")).thenReturn(expected.getName());
+        when(resultSet.getLong("ACCOUNT_ID")).thenReturn(expected.getId());
+        when(resultSet.getTimestamp("ACCOUNT_TIMESTAMP"))
+                .thenReturn(Scheduler.toTimestamp(expected.getCurrentTimestamp()));
         Account account = new Account();
         Long accountId = 1L;
         Account actual = subject.findById(accountId);
         assertNotNull(actual);
+
+
+        assertEquals(expected,actual);
     }
 
     @Test
@@ -56,6 +66,7 @@ class AccountJdbcRepositoryTest
         assertNotNull(actual);
         verify(preparedStatement).setLong(1, expected.getId());
         verify(preparedStatement).setString(2, expected.getName());
+        //verify(preparedStatement).setTimestamp(3, any(Timestamp.class));
         verify(preparedStatement).execute();
     }
 
@@ -67,8 +78,9 @@ class AccountJdbcRepositoryTest
 
         Account actual = subject.update(expected);
         assertNotNull(actual);
-        verify(preparedStatement,atLeastOnce()).setLong(2, expected.getId());
+        verify(preparedStatement,atLeastOnce()).setLong(3, expected.getId());
         verify(preparedStatement,atLeastOnce()).setString(1, expected.getName());
+        //verify(preparedStatement,atLeastOnce()).setTimestamp(2, any(Timestamp.class));
         verify(preparedStatement,atLeastOnce()).executeUpdate();
     }
 
@@ -108,8 +120,9 @@ class AccountJdbcRepositoryTest
 
         Account actual = subject.save(expected);
         assertNotNull(actual);
-        verify(preparedStatement,atLeastOnce()).setLong(2, expected.getId());
         verify(preparedStatement,atLeastOnce()).setString(1, expected.getName());
+        verify(preparedStatement,atLeastOnce()).setLong(3, expected.getId());
+        //verify(preparedStatement,atLeastOnce()).setTimestamp(2, any(Timestamp.class));
         verify(preparedStatement,atLeastOnce()).execute();
     }
 

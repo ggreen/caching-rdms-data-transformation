@@ -28,7 +28,7 @@ public class AccountKafkaSender implements Consumer<List<Account>>, AutoCloseabl
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-        this.producer = new KafkaProducer<>(props);;
+        this.producer = new KafkaProducer<>(props);
         this.accountToJson = new AccountToJson();
         this.topic = Config.getProperty("KAFKA_TOPIC","accounts");
     }
@@ -49,7 +49,7 @@ public class AccountKafkaSender implements Consumer<List<Account>>, AutoCloseabl
     protected ProducerRecord<String, String> toProducerRecord(Account account)
     {
         String json = accountToJson.apply(account);
-        return new ProducerRecord<String,String>(topic,String.valueOf(account.getId()),json);
+        return new ProducerRecord<>(topic,String.valueOf(account.getId()),json);
     }
 
     public void close()

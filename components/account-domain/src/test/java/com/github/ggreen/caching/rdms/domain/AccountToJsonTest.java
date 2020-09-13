@@ -17,8 +17,9 @@ class AccountToJsonTest
     void apply()
     {
         AccountToJson subject = new AccountToJson();
-        Account account = new Account(1L,"hello");
-        String expected =  "{\"id\":1,\"name\":\"hello\"}";
+        final long currentTimestamp = System.currentTimeMillis();
+        Account account = new Account(1L,"hello", currentTimestamp);
+        String expected =  "{\"id\":1,\"name\":\"hello\",\"currentTimestamp\":"+currentTimestamp+"}";
 
         assertEquals(expected,subject.apply(account));
 

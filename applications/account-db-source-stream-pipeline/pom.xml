@@ -106,7 +106,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.ggreen.caching.rdms.pipeline.AccountDbSourceApp</mainClass>
+                            <mainClass>com.github.ggreen.caching.rdms.pipeline.AccountDbSource</mainClass>
                         </manifest>
                         <manifestEntries>
                             <!-- Specified to allow Jetty to know its own Version ID -->

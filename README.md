@@ -115,4 +115,12 @@ Start the JDBC migration.
 
 ```shell script
 
-java -jar applications/account-db-rest-service/target/account-db-migrations-1.0-SNAPSHOT.jar 
+java -jar applications/account-db-migrations/target/account-db-migrations-1.0-SNAPSHOT.jar 
+
+# Geode Setup
+
+start locator --name=locator
+
+start server --name=server1 --server-port=40001
+
+create region --name=accounts --type=PARTITION

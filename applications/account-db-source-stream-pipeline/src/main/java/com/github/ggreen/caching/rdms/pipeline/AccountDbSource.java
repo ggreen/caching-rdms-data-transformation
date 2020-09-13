@@ -1,6 +1,7 @@
 package com.github.ggreen.caching.rdms.pipeline;
 
 
+import com.github.ggreen.caching.rdms.geode.AccountGeodeRepository;
 import com.github.ggreen.caching.rdms.pipeline.batch.AccountDbBatch;
 import nyla.solutions.core.patterns.batch.BatchReport;
 import nyla.solutions.core.util.Config;
@@ -18,7 +19,7 @@ public class AccountDbSource implements Runnable
 
     public AccountDbSource() throws SQLException
     {
-        this.batch = new AccountDbBatch(new AccountKafkaSender());
+        this.batch = new AccountDbBatch(new AccountKafkaSender(),new AccountGeodeRepository());
         sleepSeconds = Config.getPropertyInteger("ACCOUNT_SOURCE_FETCH_SECS",5);
     }
     public AccountDbSource(AccountDbBatch batch, int sleepSeconds)
@@ -55,4 +56,18 @@ public class AccountDbSource implements Runnable
 
         }
     }
+
+    public static void main(String[] args) throws SQLException, InterruptedException
+    {
+        try {
+            Thread thread = new AccountDbSource().start();
+
+            thread.join();
+        }
+        catch (SQLException | InterruptedException e) {
+            Debugger.printFatal(e);
+            throw e;
+        }
+    }
+
 }

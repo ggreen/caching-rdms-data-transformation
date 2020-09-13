@@ -4,6 +4,7 @@ import com.github.ggreen.caching.rdms.domain.Account;
 import com.github.ggreen.caching.rdms.domain.AccountRepository;
 import nyla.solutions.core.exception.DataException;
 import nyla.solutions.core.util.Debugger;
+import nyla.solutions.core.util.Scheduler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,6 +18,7 @@ import java.util.function.Supplier;
 public class AccountJdbcRepository implements AccountRepository
 {
     private final Supplier<Connection> supplier;
+    private AccountResultSetConverter converter = new AccountResultSetConverter();
 
     public AccountJdbcRepository()
     {
@@ -29,14 +31,16 @@ public class AccountJdbcRepository implements AccountRepository
 
     public Account create(Account account)
     {
-        String insertSql = "INSERT INTO app.account(ACCOUNT_ID, ACCOUNT_NM) values(?,?)";
+        String insertSql = "INSERT INTO app.account(ACCOUNT_ID, ACCOUNT_NM,ACCOUNT_TIMESTAMP) values(?,?,?)";
         try(Connection connection = this.supplier.get())
         {
 
             try(PreparedStatement preparedStatement = connection.prepareStatement(insertSql))
             {
+                account.setCurrentTimestamp(System.currentTimeMillis());
                 preparedStatement.setLong(1,account.getId());
                 preparedStatement.setString(2,account.getName());
+                preparedStatement.setTimestamp(3,Scheduler.toTimestamp(account.getCurrentTimestamp()));
 
                 Debugger.println(this,insertSql);
                 preparedStatement.execute();
@@ -51,7 +55,7 @@ public class AccountJdbcRepository implements AccountRepository
 
     public Account findById(Long accountId)
     {
-        String sqlText = "select ACCOUNT_ID,ACCOUNT_NM from app.account  where ACCOUNT_ID = ?";
+        String sqlText = "select ACCOUNT_ID,ACCOUNT_NM,ACCOUNT_TIMESTAMP from app.account  where ACCOUNT_ID = ?";
 
         try(Connection connection = supplier.get())
         {
@@ -64,9 +68,7 @@ public class AccountJdbcRepository implements AccountRepository
                     if(!resultSet.next())
                         return null;
 
-                    return   Account.builder().id(resultSet.getLong(1))
-                                    .name(resultSet.getString(2))
-                                    .build();
+                    return   converter.convert(resultSet);
 
                 }
             }
@@ -86,14 +88,17 @@ public class AccountJdbcRepository implements AccountRepository
 
     private int executeUpdate(Account account)
     {
-        String updateSql = "UPDATE  app.account set ACCOUNT_NM = ? where ACCOUNT_ID = ?";
+        String updateSql = "UPDATE  app.account set ACCOUNT_NM = ?, ACCOUNT_TIMESTAMP = ? where ACCOUNT_ID = ?";
         try(Connection connection = this.supplier.get())
         {
 
             try(PreparedStatement preparedStatement = connection.prepareStatement(updateSql))
             {
+                account.setCurrentTimestamp(System.currentTimeMillis());
                 preparedStatement.setString(1,account.getName());
-                preparedStatement.setLong(2,account.getId());
+                preparedStatement.setTimestamp(2, Scheduler.
+                                                                   toTimestamp(account.getCurrentTimestamp()));
+                preparedStatement.setLong(3,account.getId());
 
                 Debugger.println(this,updateSql+" account:"+account);
                 return preparedStatement.executeUpdate();

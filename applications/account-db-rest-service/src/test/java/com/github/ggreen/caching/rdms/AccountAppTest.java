@@ -164,6 +164,9 @@ class AccountAppTest
     @AfterAll
     static void tearDown() throws Exception
     {
+        if(app == null)
+            return;
+
         app.stop();
         thread.join();
 
