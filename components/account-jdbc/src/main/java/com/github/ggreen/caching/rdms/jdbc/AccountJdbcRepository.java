@@ -37,7 +37,7 @@ public class AccountJdbcRepository implements AccountRepository
 
             try(PreparedStatement preparedStatement = connection.prepareStatement(insertSql))
             {
-                account.setCurrentTimestamp(System.currentTimeMillis());
+                account.setCurrentTimestamp(Scheduler.toEpochTimestamp());
                 preparedStatement.setLong(1,account.getId());
                 preparedStatement.setString(2,account.getName());
                 preparedStatement.setTimestamp(3,Scheduler.toTimestamp(account.getCurrentTimestamp()));
@@ -94,7 +94,7 @@ public class AccountJdbcRepository implements AccountRepository
 
             try(PreparedStatement preparedStatement = connection.prepareStatement(updateSql))
             {
-                account.setCurrentTimestamp(System.currentTimeMillis());
+                account.setCurrentTimestamp(Scheduler.toEpochTimestamp());
                 preparedStatement.setString(1,account.getName());
                 preparedStatement.setTimestamp(2, Scheduler.
                                                                    toTimestamp(account.getCurrentTimestamp()));

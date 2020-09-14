@@ -66,8 +66,18 @@ class AccountJdbcRepositoryTest
         assertNotNull(actual);
         verify(preparedStatement).setLong(1, expected.getId());
         verify(preparedStatement).setString(2, expected.getName());
-        //verify(preparedStatement).setTimestamp(3, any(Timestamp.class));
         verify(preparedStatement).execute();
+    }
+    @Test
+    void create_populated_currentTimestamp() throws SQLException
+    {
+        Account expected = new JavaBeanGeneratorCreator<Account>(Account.class)
+                .randomizeAll().create();
+        expected.setCurrentTimestamp(null);
+
+        Account actual = subject.create(expected);
+        assertNotNull(actual);
+        assertNotNull(actual.getCurrentTimestamp());
     }
 
     @Test
@@ -80,9 +90,21 @@ class AccountJdbcRepositoryTest
         assertNotNull(actual);
         verify(preparedStatement,atLeastOnce()).setLong(3, expected.getId());
         verify(preparedStatement,atLeastOnce()).setString(1, expected.getName());
-        //verify(preparedStatement,atLeastOnce()).setTimestamp(2, any(Timestamp.class));
         verify(preparedStatement,atLeastOnce()).executeUpdate();
     }
+
+    @Test
+    void update_currentTimestampPopulated() throws SQLException
+    {
+        Account expected = new JavaBeanGeneratorCreator<Account>(Account.class)
+                .randomizeAll().create();
+        expected.setCurrentTimestamp(null);
+
+        Account actual = subject.update(expected);
+        assertNotNull(actual.getCurrentTimestamp());
+
+    }
+
 
     @Test
     void when_sqlexception_then_throw_dataException() throws SQLException
@@ -124,6 +146,17 @@ class AccountJdbcRepositoryTest
         verify(preparedStatement,atLeastOnce()).setLong(3, expected.getId());
         //verify(preparedStatement,atLeastOnce()).setTimestamp(2, any(Timestamp.class));
         verify(preparedStatement,atLeastOnce()).execute();
+    }
+
+    @Test
+    void save_currentTimestamp() throws SQLException
+    {
+        Account expected = new JavaBeanGeneratorCreator<Account>(Account.class)
+                .randomizeAll().create();
+        expected.setCurrentTimestamp(null);
+
+        Account actual = subject.save(expected);
+        assertNotNull(actual.getCurrentTimestamp());
     }
 
 }
