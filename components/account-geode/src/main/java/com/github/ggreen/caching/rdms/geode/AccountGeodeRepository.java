@@ -48,20 +48,6 @@ public class AccountGeodeRepository implements AccountRepository
         return account;
     }
 
-    private void populateTimestamp(Account account)
-    {
-        if(account.getCurrentTimestamp() == null)
-            account.setCurrentTimestamp(System.currentTimeMillis());
-    }
-
-    private Long getAccountId(Account account)
-    {
-        Long id = account.getId();
-        if(id == null)
-            throw new IllegalArgumentException("account.id required");
-        return id;
-    }
-
 
     @Override
     public Account findById(Long accountId)
@@ -87,6 +73,14 @@ public class AccountGeodeRepository implements AccountRepository
         return true;
     }
 
+    private Long getAccountId(Account account)
+    {
+        Long id = account.getId();
+        if(id == null)
+            throw new IllegalArgumentException("account.id required");
+        return id;
+    }
+
     @Override
     public Account save(Account account)
     {
@@ -109,5 +103,11 @@ public class AccountGeodeRepository implements AccountRepository
 
         return longs;
 
+    }
+
+    private void populateTimestamp(Account account)
+    {
+        if(account.getCurrentTimestamp() == null)
+            account.setCurrentTimestamp(System.currentTimeMillis());
     }
 }

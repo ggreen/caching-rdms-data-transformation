@@ -120,7 +120,13 @@ java -jar applications/account-db-migrations/target/account-db-migrations-1.0-SN
 # Geode Setup
 
 start locator --name=locator
+configure pdx --read-serialized=true
 
 start server --name=server1 --server-port=40001
 
+
 create region --name=accounts --type=PARTITION
+
+
+
+start server --name=server2 --server-port=40002

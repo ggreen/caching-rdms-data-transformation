@@ -38,6 +38,19 @@ class AccountJdbcRepositoryTest
     }
 
     @Test
+    void create() throws SQLException
+    {
+        Account expected = new JavaBeanGeneratorCreator<Account>(Account.class)
+                .randomizeAll().create();
+
+        Account actual = subject.create(expected);
+        assertNotNull(actual);
+        verify(preparedStatement).setLong(1, expected.getId());
+        verify(preparedStatement).setString(2, expected.getName());
+        verify(preparedStatement).execute();
+    }
+
+    @Test
     void findById() throws SQLException
     {
         Account expected = new JavaBeanGeneratorCreator<>(Account.class)
@@ -54,19 +67,6 @@ class AccountJdbcRepositoryTest
 
 
         assertEquals(expected,actual);
-    }
-
-    @Test
-    void create() throws SQLException
-    {
-        Account expected = new JavaBeanGeneratorCreator<Account>(Account.class)
-                .randomizeAll().create();
-
-        Account actual = subject.create(expected);
-        assertNotNull(actual);
-        verify(preparedStatement).setLong(1, expected.getId());
-        verify(preparedStatement).setString(2, expected.getName());
-        verify(preparedStatement).execute();
     }
     @Test
     void create_populated_currentTimestamp() throws SQLException
