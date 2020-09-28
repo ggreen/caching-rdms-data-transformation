@@ -113,8 +113,8 @@ Start the JDBC migration.
 
 
 ```shell script
-
 java -jar applications/account-db-migrations/target/account-db-migrations-1.0-SNAPSHOT.jar 
+```
 
 # Geode Setup
 
