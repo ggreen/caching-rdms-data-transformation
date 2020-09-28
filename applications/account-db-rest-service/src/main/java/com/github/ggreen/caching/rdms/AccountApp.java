@@ -2,6 +2,7 @@ package com.github.ggreen.caching.rdms;
 
 import nyla.solutions.core.exception.FatalException;
 import nyla.solutions.core.exception.SystemException;
+import nyla.solutions.core.patterns.creational.servicefactory.ServiceFactory;
 import nyla.solutions.core.util.Config;
 import nyla.solutions.core.util.Debugger;
 
@@ -86,7 +87,7 @@ class AccountApp
 
     public static void main(String[] args)
     {
-        System.out.println("Repository="+ Config.getProperty("FACTORY_REPOSITORY"));
+        System.out.println("Repository="+ ServiceFactory.getInstance().create("REPOSITORY").getClass().getName());
         getInstance().run();
     }
 }

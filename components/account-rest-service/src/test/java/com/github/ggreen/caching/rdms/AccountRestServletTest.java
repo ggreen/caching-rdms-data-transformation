@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Given Account Servlet")
-public class AccountServletTest
+public class AccountRestServletTest
 {
     private AccountRepository repository;
     private AccountRestServlet subject;
@@ -50,6 +50,7 @@ public class AccountServletTest
         response = mock(HttpServletResponse.class);
         printWriter = mock(PrintWriter.class);
         when(response.getWriter()).thenReturn(printWriter);
+
     }
 
 
@@ -57,6 +58,7 @@ public class AccountServletTest
     void createWithServiceFactory()
     {
         ServiceFactory serviceFactory = mock(ServiceFactory.class);
+        when(serviceFactory.create("REPOSITORY")).thenReturn(repository);
 
         subject = new AccountRestServlet(serviceFactory);
         verify(serviceFactory).create(anyString());
@@ -97,7 +99,7 @@ public class AccountServletTest
 
             when(request.getRequestURI()).thenReturn(uri);
             subject.doGet(request, response);
-            verify(repository).findById(anyLong());
+            verify(repository).findById(14L);
         }
 
         @Test
@@ -109,7 +111,7 @@ public class AccountServletTest
             when(repository.findById(anyLong())).thenReturn(null);
 
             subject.doGet(request, response);
-            verify(repository).findById(anyLong());
+            verify(repository).findById(1L);
             verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
 
         }

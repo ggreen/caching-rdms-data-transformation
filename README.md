@@ -92,7 +92,6 @@ java -jar applications/account-db-cache-batch-pipeline/target/account-db-cache-b
 
 ```shell script
 export KAFKA_APPLICATION_ID_CONFIG=applications-source
-
 java -jar applications/account-db-source-stream-pipeline/target/account-db-source-stream-pipeline-1.0-SNAPSHOT.jar
 ```
 
@@ -130,3 +129,14 @@ create region --name=accounts --type=PARTITION
 
 
 start server --name=server2 --server-port=40002
+
+
+# JSON Examples
+
+
+```json
+{
+  "id" : 1,
+  "name" : "Account 1"
+}
+```

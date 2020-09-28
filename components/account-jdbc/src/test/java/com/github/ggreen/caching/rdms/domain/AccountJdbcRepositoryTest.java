@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Supplier;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -45,6 +46,9 @@ class AccountJdbcRepositoryTest
 
         Account actual = subject.create(expected);
         assertNotNull(actual);
+        assertEquals(expected.getId(),actual.getId());
+        assertEquals(expected.getName(),actual.getName());
+        assertNotNull(actual.getCurrentTimestamp());
         verify(preparedStatement).setLong(1, expected.getId());
         verify(preparedStatement).setString(2, expected.getName());
         verify(preparedStatement).execute();
@@ -64,8 +68,6 @@ class AccountJdbcRepositoryTest
         Long accountId = 1L;
         Account actual = subject.findById(accountId);
         assertNotNull(actual);
-
-
         assertEquals(expected,actual);
     }
     @Test
@@ -88,21 +90,13 @@ class AccountJdbcRepositoryTest
 
         Account actual = subject.update(expected);
         assertNotNull(actual);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getName(), actual.getName());
+        assertNotNull(actual.getCurrentTimestamp());
+
         verify(preparedStatement,atLeastOnce()).setLong(3, expected.getId());
         verify(preparedStatement,atLeastOnce()).setString(1, expected.getName());
         verify(preparedStatement,atLeastOnce()).executeUpdate();
-    }
-
-    @Test
-    void update_currentTimestampPopulated() throws SQLException
-    {
-        Account expected = new JavaBeanGeneratorCreator<Account>(Account.class)
-                .randomizeAll().create();
-        expected.setCurrentTimestamp(null);
-
-        Account actual = subject.update(expected);
-        assertNotNull(actual.getCurrentTimestamp());
-
     }
 
 
@@ -144,7 +138,6 @@ class AccountJdbcRepositoryTest
         assertNotNull(actual);
         verify(preparedStatement,atLeastOnce()).setString(1, expected.getName());
         verify(preparedStatement,atLeastOnce()).setLong(3, expected.getId());
-        //verify(preparedStatement,atLeastOnce()).setTimestamp(2, any(Timestamp.class));
         verify(preparedStatement,atLeastOnce()).execute();
     }
 
