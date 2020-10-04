@@ -60,9 +60,7 @@ java -jar applications/account-db-rest-service/target/account-db-rest-service-1.
 ## Apache Geode
 
 ```shell script
-export FACTORY_REPOSITORY=com.github.ggreen.caching.rdms.geode.AccountGeodeRepository
-java -jar applications/account-db-rest-service/target/account-db-rest-service-1.0-SNAPSHOT.jar 
-```
+ ```
 
 ## JDBC/Apache Geode Look Aside Cache
 ```shell script
